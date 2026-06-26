@@ -28,13 +28,13 @@ db.init_db()
 
 st.markdown("""
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,300;1,9..40,400&display=swap');
 
-  /* ── Basis ───────────────────────────────────────────────────────────── */
+  /* ── Basis: Weiß auf Schwarz ─────────────────────────────────────────── */
   html, body, .stApp {
-    background-color: #080808 !important;
-    color: #E8E8E8 !important;
-    font-family: 'Inter', sans-serif !important;
+    background-color: #F7F5F2 !important;
+    color: #0A0A0A !important;
+    font-family: 'DM Sans', sans-serif !important;
   }
   .block-container {
     padding: 2rem 2.5rem 3rem 2.5rem !important;
@@ -43,67 +43,71 @@ st.markdown("""
 
   /* ── App Header ──────────────────────────────────────────────────────── */
   .app-header {
-    background: #0E0E0E;
-    border: 1px solid #1E1E1E;
-    border-radius: 16px;
-    padding: 2rem 2.5rem;
+    background: #0A0A0A;
+    border-radius: 20px;
+    padding: 2.2rem 2.8rem;
     margin-bottom: 2rem;
+    box-shadow: 0 4px 40px rgba(0,0,0,0.12);
   }
   .app-title {
-    font-size: 1.9rem;
-    font-weight: 800;
-    letter-spacing: -0.03em;
+    font-size: 1.85rem;
+    font-weight: 700;
+    letter-spacing: -0.04em;
     margin: 0;
-    background: linear-gradient(135deg, #FFFFFF 0%, #A0A0A0 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #FFFFFF;
+    font-family: 'DM Sans', sans-serif;
   }
   .app-subtitle {
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     color: #444;
-    margin: 0.4rem 0 0 0;
-    letter-spacing: 0.18em;
+    margin: 0.5rem 0 0 0;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
     font-weight: 500;
   }
 
   /* ── Metric Cards ────────────────────────────────────────────────────── */
   .metric-card {
-    background: #0E0E0E;
-    border: 1px solid #1A1A1A;
-    border-radius: 12px;
-    padding: 1.2rem 1.4rem;
+    background: #FFFFFF;
+    border: none;
+    border-radius: 16px;
+    padding: 1.4rem 1.2rem;
     text-align: center;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04);
+    transition: box-shadow 0.2s ease;
+  }
+  .metric-card:hover {
+    box-shadow: 0 8px 32px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.06);
   }
   .metric-value {
     font-size: 1.9rem;
     font-weight: 700;
-    color: #FFFFFF;
+    color: #0A0A0A;
     line-height: 1;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
+    font-family: 'DM Sans', sans-serif;
   }
   .metric-label {
-    font-size: 0.65rem;
-    color: #3A3A3A;
+    font-size: 0.62rem;
+    color: #999;
     text-transform: uppercase;
-    letter-spacing: 0.18em;
-    margin-top: 0.5rem;
+    letter-spacing: 0.2em;
+    margin-top: 0.6rem;
     font-weight: 600;
   }
   .metric-sub {
     font-size: 0.78rem;
-    color: #555;
+    color: #BBB;
     margin-top: 0.3rem;
   }
 
   /* ── Progress Bar ────────────────────────────────────────────────────── */
   .progress-bar-wrap {
-    background: #1A1A1A;
+    background: #EFEFEF;
     border-radius: 999px;
     height: 3px;
     overflow: hidden;
-    margin: 0.6rem 0 0.3rem 0;
+    margin: 0.7rem 0 0.3rem 0;
   }
   .progress-bar-fill {
     height: 100%;
@@ -113,230 +117,252 @@ st.markdown("""
 
   /* ── Mahlzeiten ──────────────────────────────────────────────────────── */
   .meal-slot-header {
-    font-size: 0.65rem;
+    font-size: 0.62rem;
     font-weight: 700;
-    color: #3A3A3A;
+    color: #BBBBBB;
     text-transform: uppercase;
-    letter-spacing: 0.2em;
-    margin-bottom: 0.6rem;
-    padding-bottom: 0.6rem;
-    border-bottom: 1px solid #151515;
+    letter-spacing: 0.22em;
+    margin-bottom: 0.7rem;
+    padding-bottom: 0.7rem;
+    border-bottom: 1px solid #F0F0F0;
   }
   .meal-field-label {
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     font-weight: 600;
-    color: #555;
+    color: #AAAAAA;
     margin-bottom: 0.3rem;
     display: block;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
   }
 
   /* ── Info-Boxen ──────────────────────────────────────────────────────── */
   .warn-box {
-    background: #161410;
-    border-left: 2px solid #6B5A00;
-    border-radius: 0 8px 8px 0;
-    padding: 0.6rem 1rem;
+    background: #FFFBF0;
+    border-left: 2px solid #D4A800;
+    border-radius: 0 10px 10px 0;
+    padding: 0.7rem 1rem;
     font-size: 0.8rem;
-    color: #8A7A30;
+    color: #8A6F00;
     margin-top: 0.5rem;
   }
   .plateau-box {
-    background: #100E0E;
-    border: 1px solid #2A1A1A;
-    border-radius: 10px;
+    background: #FFF8F8;
+    border: 1px solid #F0DADA;
+    border-radius: 12px;
     padding: 1rem 1.4rem;
     margin: 1rem 0;
-    color: #888;
+    color: #8A4A4A;
     font-size: 0.9rem;
   }
   .foto-box {
-    background: #0E0E12;
-    border: 1px solid #1E1E2A;
-    border-radius: 10px;
+    background: #F8F8FF;
+    border: 1px solid #E0E0F0;
+    border-radius: 12px;
     padding: 0.8rem 1.2rem;
     margin: 0.8rem 0;
-    color: #666;
+    color: #666688;
     font-size: 0.88rem;
   }
   .success-box {
-    background: #0A100A;
-    border: 1px solid #1A2A1A;
-    border-radius: 10px;
+    background: #F6FBF6;
+    border: 1px solid #D0E8D0;
+    border-radius: 12px;
     padding: 0.8rem 1.2rem;
     margin: 0.8rem 0;
-    color: #4A6A4A;
+    color: #3A6A3A;
     font-size: 0.88rem;
   }
 
   /* ── Streak ──────────────────────────────────────────────────────────── */
   .streak-display {
-    font-size: 3.5rem;
-    font-weight: 800;
-    color: #FFFFFF;
+    font-size: 3.8rem;
+    font-weight: 700;
+    color: #0A0A0A;
     text-align: center;
     line-height: 1;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.04em;
+    font-family: 'DM Sans', sans-serif;
   }
   .streak-label {
     text-align: center;
-    font-size: 0.65rem;
-    color: #333;
-    letter-spacing: 0.2em;
+    font-size: 0.62rem;
+    color: #BBB;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
-    margin-top: 0.4rem;
+    margin-top: 0.5rem;
     font-weight: 600;
   }
 
   /* ── Section Header ──────────────────────────────────────────────────── */
   .section-header {
-    font-size: 0.62rem;
+    font-size: 0.6rem;
     font-weight: 700;
-    color: #333;
+    color: #C0C0C0;
     text-transform: uppercase;
-    letter-spacing: 0.22em;
-    margin: 2rem 0 1rem 0;
-    padding-bottom: 0.6rem;
-    border-bottom: 1px solid #151515;
+    letter-spacing: 0.25em;
+    margin: 2.2rem 0 1.2rem 0;
+    padding-bottom: 0.7rem;
+    border-bottom: 1px solid #EBEBEB;
   }
 
   /* ── Start Screen ────────────────────────────────────────────────────── */
   .start-screen {
-    background: #0E0E0E;
-    border: 1px solid #1A1A1A;
-    border-radius: 16px;
+    background: #FFFFFF;
+    border: none;
+    border-radius: 20px;
     padding: 3.5rem 2.5rem;
     text-align: center;
     margin: 3rem auto;
     max-width: 560px;
+    box-shadow: 0 4px 40px rgba(0,0,0,0.08);
   }
   .start-title {
-    font-size: 1.6rem;
-    font-weight: 800;
-    color: #FFFFFF;
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: #0A0A0A;
     margin-bottom: 0.8rem;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
   }
   .start-sub {
-    color: #555;
-    font-size: 0.9rem;
+    color: #999;
+    font-size: 0.92rem;
     margin-bottom: 2.5rem;
-    line-height: 1.7;
+    line-height: 1.75;
   }
 
   /* ── Inputs ──────────────────────────────────────────────────────────── */
   div[data-testid="stNumberInput"] input,
   div[data-testid="stTextInput"] input,
   div[data-testid="stDateInput"] input {
-    background-color: #0E0E0E !important;
-    border: 1px solid #1E1E1E !important;
-    color: #E8E8E8 !important;
-    border-radius: 8px !important;
+    background-color: #FFFFFF !important;
+    border: 1px solid #E8E8E8 !important;
+    color: #0A0A0A !important;
+    border-radius: 10px !important;
     font-size: 0.95rem !important;
-    font-family: 'Inter', sans-serif !important;
+    font-family: 'DM Sans', sans-serif !important;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04) !important;
   }
   div[data-testid="stNumberInput"] input:focus,
   div[data-testid="stTextInput"] input:focus {
-    border-color: #3A3A3A !important;
-    box-shadow: none !important;
+    border-color: #0A0A0A !important;
+    box-shadow: 0 0 0 2px rgba(10,10,10,0.06) !important;
   }
   div[data-testid="stNumberInput"] label,
   div[data-testid="stTextInput"] label,
   div[data-testid="stDateInput"] label {
-    color: #444 !important;
-    font-size: 0.72rem !important;
+    color: #AAAAAA !important;
+    font-size: 0.68rem !important;
     font-weight: 600 !important;
     text-transform: uppercase !important;
-    letter-spacing: 0.12em !important;
+    letter-spacing: 0.14em !important;
+    font-family: 'DM Sans', sans-serif !important;
   }
 
   /* ── Buttons ─────────────────────────────────────────────────────────── */
   .stButton > button {
-    border-radius: 8px !important;
+    border-radius: 10px !important;
     font-weight: 600 !important;
-    letter-spacing: 0.08em !important;
-    font-size: 0.85rem !important;
+    letter-spacing: 0.04em !important;
+    font-size: 0.88rem !important;
     transition: all 0.2s ease !important;
-    font-family: 'Inter', sans-serif !important;
+    font-family: 'DM Sans', sans-serif !important;
   }
   .stButton > button[kind="primary"] {
-    background: #FFFFFF !important;
+    background: #0A0A0A !important;
     border: none !important;
-    color: #080808 !important;
+    color: #FFFFFF !important;
     padding: 0.65rem 1.5rem !important;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15) !important;
   }
   .stButton > button[kind="primary"]:hover {
-    background: #D8D8D8 !important;
+    background: #2A2A2A !important;
     transform: translateY(-1px) !important;
-    box-shadow: 0 8px 30px rgba(255,255,255,0.08) !important;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.18) !important;
   }
   .stButton > button[kind="secondary"] {
-    background: transparent !important;
-    border: 1px solid #222 !important;
-    color: #888 !important;
+    background: #FFFFFF !important;
+    border: 1px solid #E0E0E0 !important;
+    color: #666 !important;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04) !important;
   }
   .stButton > button[kind="secondary"]:hover {
-    border-color: #444 !important;
-    color: #CCC !important;
+    border-color: #AAAAAA !important;
+    color: #0A0A0A !important;
   }
 
   /* ── Checkboxen ──────────────────────────────────────────────────────── */
   div[data-testid="stCheckbox"] label {
-    color: #888 !important;
-    font-size: 0.9rem !important;
+    color: #555 !important;
+    font-size: 0.92rem !important;
     font-weight: 400 !important;
+    font-family: 'DM Sans', sans-serif !important;
   }
   div[data-testid="stCheckbox"] input:checked + div {
-    background-color: #FFFFFF !important;
-    border-color: #FFFFFF !important;
+    background-color: #0A0A0A !important;
+    border-color: #0A0A0A !important;
   }
 
   /* ── Tabs ────────────────────────────────────────────────────────────── */
   .stTabs [data-baseweb="tab-list"] {
-    background-color: #0E0E0E !important;
-    border: 1px solid #1A1A1A !important;
-    border-radius: 10px !important;
+    background-color: #EEECE9 !important;
+    border: none !important;
+    border-radius: 12px !important;
     padding: 0.3rem !important;
     gap: 0.2rem !important;
   }
   .stTabs [data-baseweb="tab"] {
-    border-radius: 7px !important;
-    color: #444 !important;
+    border-radius: 9px !important;
+    color: #AAAAAA !important;
     font-weight: 600 !important;
     font-size: 0.82rem !important;
-    letter-spacing: 0.05em !important;
+    letter-spacing: 0.03em !important;
+    font-family: 'DM Sans', sans-serif !important;
   }
   .stTabs [aria-selected="true"] {
-    background-color: #1A1A1A !important;
-    color: #FFFFFF !important;
+    background-color: #FFFFFF !important;
+    color: #0A0A0A !important;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.08) !important;
   }
 
-  /* ── Selectbox / Expander ────────────────────────────────────────────── */
-  div[data-baseweb="select"] {
-    background-color: #0E0E0E !important;
-  }
+  /* ── Expander ────────────────────────────────────────────────────────── */
   div[data-testid="stExpander"] {
-    background: #0E0E0E !important;
-    border: 1px solid #1A1A1A !important;
-    border-radius: 10px !important;
+    background: #FFFFFF !important;
+    border: 1px solid #EBEBEB !important;
+    border-radius: 12px !important;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.04) !important;
   }
   div[data-testid="stExpander"] summary {
-    color: #444 !important;
-    font-size: 0.8rem !important;
+    color: #AAAAAA !important;
+    font-size: 0.78rem !important;
+    font-family: 'DM Sans', sans-serif !important;
   }
 
   /* ── Divider ─────────────────────────────────────────────────────────── */
   hr {
-    border-color: #151515 !important;
-    margin: 1.5rem 0 !important;
+    border-color: #EBEBEB !important;
+    margin: 1.8rem 0 !important;
   }
 
   /* ── Dataframe ───────────────────────────────────────────────────────── */
   div[data-testid="stDataFrame"] {
-    background: #0E0E0E !important;
-    border: 1px solid #1A1A1A !important;
+    background: #FFFFFF !important;
+    border: 1px solid #EBEBEB !important;
+    border-radius: 12px !important;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.04) !important;
+  }
+
+  /* ── Selectbox ───────────────────────────────────────────────────────── */
+  div[data-baseweb="select"] > div {
+    background-color: #FFFFFF !important;
+    border: 1px solid #E8E8E8 !important;
     border-radius: 10px !important;
+  }
+
+  /* ── Caption / Info Text ─────────────────────────────────────────────── */
+  .stCaption, div[data-testid="stCaptionContainer"] {
+    color: #BBBBBB !important;
+    font-family: 'DM Sans', sans-serif !important;
   }
 </style>
 """, unsafe_allow_html=True)
@@ -440,32 +466,28 @@ if "gespeichert" not in st.session_state or "slots" not in st.session_state:
 
 def fortschrittsbalken(wert: float, ziel: float, farbe: str, einheit: str = "") -> str:
     pct = min((wert / ziel) * 100, 100) if ziel > 0 else 0
-    # Im neuen Design immer silberner Balken, Farbe nur für Status-Dot
-    balken_farbe = "linear-gradient(90deg, #3A3A3A, #888888)"
-    if pct >= 100:
-        balken_farbe = "linear-gradient(90deg, #555, #FFFFFF)"
+    balken = "linear-gradient(90deg,#E0E0E0,#0A0A0A)" if pct >= 100 else "linear-gradient(90deg,#EFEFEF,#AAAAAA)"
     return f"""
     <div class='progress-bar-wrap'>
-      <div class='progress-bar-fill' style='width:{pct:.1f}%;background:{balken_farbe};'></div>
+      <div class='progress-bar-fill' style='width:{pct:.1f}%;background:{balken};'></div>
     </div>
-    <div style='display:flex;justify-content:space-between;font-size:0.75rem;color:#333;margin-top:0.2rem;'>
-      <span style='color:#666;'>{wert:.0f}{einheit}</span>
-      <span style='color:#333;'>/ {ziel:.0f}{einheit}</span>
+    <div style='display:flex;justify-content:space-between;font-size:0.73rem;margin-top:0.25rem;'>
+      <span style='color:#888;'>{wert:.0f}{einheit}</span>
+      <span style='color:#CCC;'>/ {ziel:.0f}{einheit}</span>
     </div>
     """
 
 
 def makro_karte(label: str, wert: float, ziel: float, einheit: str, farbe: str) -> str:
     pct = min((wert / ziel) * 100, 100) if ziel > 0 else 0
-    # Status-Indikator: kleiner Dot statt Farbe
-    dot = "#FFFFFF" if pct >= 100 else ("#666" if pct >= 80 else "#2A2A2A")
-    balken = "linear-gradient(90deg, #2A2A2A, #FFFFFF)" if pct >= 100 else "linear-gradient(90deg, #1E1E1E, #555)"
+    dot   = "#0A0A0A" if pct >= 100 else ("#AAAAAA" if pct >= 80 else "#E0E0E0")
+    balken = "linear-gradient(90deg,#E8E8E8,#0A0A0A)" if pct >= 100 else "linear-gradient(90deg,#F0F0F0,#CCCCCC)"
     return f"""
     <div class='metric-card'>
-      <div style='display:flex;align-items:center;justify-content:center;gap:0.5rem;'>
-        <div style='width:6px;height:6px;border-radius:50%;background:{dot};flex-shrink:0;'></div>
-        <div class='metric-value' style='font-size:1.6rem;'>
-          {wert:.0f}<span style='font-size:0.75rem;color:#333;font-weight:400;margin-left:2px;'>{einheit}</span>
+      <div style='display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-bottom:0.1rem;'>
+        <div style='width:5px;height:5px;border-radius:50%;background:{dot};flex-shrink:0;'></div>
+        <div class='metric-value'>
+          {wert:.0f}<span style='font-size:0.72rem;color:#CCC;font-weight:400;margin-left:3px;'>{einheit}</span>
         </div>
       </div>
       <div class='metric-label'>{label}</div>
@@ -501,26 +523,26 @@ st.markdown(f"""
     </div>
     <div style='display:flex;gap:2.5rem;align-items:center;'>
       <div style='text-align:center;'>
-        <div style='font-size:2.2rem;font-weight:800;color:#FFFFFF;line-height:1;letter-spacing:-0.03em;'>{tag_nr}</div>
-        <div style='font-size:0.6rem;color:#2A2A2A;text-transform:uppercase;letter-spacing:0.2em;margin-top:0.3rem;font-weight:600;'>von 90</div>
+        <div style='font-size:2.2rem;font-weight:700;color:#FFFFFF;line-height:1;letter-spacing:-0.04em;font-family:DM Sans,sans-serif;'>{tag_nr}</div>
+        <div style='font-size:0.58rem;color:#444;text-transform:uppercase;letter-spacing:0.22em;margin-top:0.4rem;font-weight:600;'>von 90</div>
       </div>
-      <div style='width:1px;height:2.5rem;background:#1A1A1A;'></div>
+      <div style='width:1px;height:2.5rem;background:#222;'></div>
       <div style='text-align:center;'>
-        <div style='font-size:2.2rem;font-weight:800;color:#FFFFFF;line-height:1;letter-spacing:-0.03em;'>{streak}</div>
-        <div style='font-size:0.6rem;color:#2A2A2A;text-transform:uppercase;letter-spacing:0.2em;margin-top:0.3rem;font-weight:600;'>Streak</div>
+        <div style='font-size:2.2rem;font-weight:700;color:#FFFFFF;line-height:1;letter-spacing:-0.04em;font-family:DM Sans,sans-serif;'>{streak}</div>
+        <div style='font-size:0.58rem;color:#444;text-transform:uppercase;letter-spacing:0.22em;margin-top:0.4rem;font-weight:600;'>Streak</div>
       </div>
-      <div style='width:1px;height:2.5rem;background:#1A1A1A;'></div>
+      <div style='width:1px;height:2.5rem;background:#222;'></div>
       <div style='text-align:right;'>
-        <div style='font-size:1rem;font-weight:600;color:#555;line-height:1;'>{heute.strftime("%d.%m.%Y")}</div>
-        <div style='font-size:0.6rem;color:#2A2A2A;text-transform:uppercase;letter-spacing:0.15em;margin-top:0.3rem;font-weight:600;'>{heute.strftime("%A")}</div>
+        <div style='font-size:0.95rem;font-weight:500;color:#777;line-height:1;font-family:DM Sans,sans-serif;'>{heute.strftime("%d.%m.%Y")}</div>
+        <div style='font-size:0.58rem;color:#444;text-transform:uppercase;letter-spacing:0.18em;margin-top:0.4rem;font-weight:600;'>{heute.strftime("%A")}</div>
       </div>
     </div>
   </div>
-  <div style='margin-top:1.5rem;'>
-    <div style='background:#111;border-radius:999px;height:2px;overflow:hidden;'>
-      <div style='width:{(tag_nr/90)*100:.1f}%;height:100%;background:linear-gradient(90deg,#2A2A2A,#FFFFFF);border-radius:999px;'></div>
+  <div style='margin-top:1.8rem;'>
+    <div style='background:#1E1E1E;border-radius:999px;height:2px;overflow:hidden;'>
+      <div style='width:{(tag_nr/90)*100:.1f}%;height:100%;background:linear-gradient(90deg,#333,#FFFFFF);border-radius:999px;'></div>
     </div>
-    <div style='font-size:0.65rem;color:#2A2A2A;margin-top:0.5rem;text-align:right;letter-spacing:0.1em;'>{90-tag_nr} TAGE VERBLEIBEND</div>
+    <div style='font-size:0.6rem;color:#333;margin-top:0.5rem;text-align:right;letter-spacing:0.15em;font-weight:600;'>{90-tag_nr} TAGE VERBLEIBEND</div>
   </div>
 </div>
 """, unsafe_allow_html=True)
