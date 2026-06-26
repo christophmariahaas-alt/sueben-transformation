@@ -1093,6 +1093,15 @@ with tab_progress:
         # ── Habits ────────────────────────────────────────────────────────────
         st.markdown("<div class='section-header'>Habits</div>", unsafe_allow_html=True)
 
+        def supp_streak(logs, fn):
+            s = 0
+            for l in reversed(logs):
+                if fn(l):
+                    s += 1
+                else:
+                    break
+            return s
+
         habit_defs = [
             ("Schritte",     lambda l: l.get("habit_schritte")),
             ("Wasser",       lambda l: l.get("habit_wasser")),
@@ -1124,15 +1133,7 @@ with tab_progress:
         # ── Supplements ───────────────────────────────────────────────────────
         st.markdown("<div class='section-header'>Supplements</div>", unsafe_allow_html=True)
 
-        def supp_streak(logs, fn):
-            """Aufeinanderfolgende Tage zuletzt eingenommen (rückwärts vom letzten Log)."""
-            s = 0
-            for l in reversed(logs):
-                if fn(l):
-                    s += 1
-                else:
-                    break
-            return s
+
 
         supp_defs = [
             ("Creatin",  lambda l: (l.get("supp_creatin_g") or 0) > 0),
