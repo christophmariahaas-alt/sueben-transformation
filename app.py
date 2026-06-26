@@ -622,12 +622,13 @@ with tab_checkin:
     # ── Supplements ──────────────────────────────────────────────────────────
     st.write("")
     st.markdown("**💊 Supplements**")
-    sup_col1, sup_col2, sup_col3 = st.columns([2, 2, 3])
+    sup_col1, sup_col2, sup_col3 = st.columns(3)
     with sup_col1:
         s_creatin = st.number_input("Creatin (g)", min_value=0.0, max_value=20.0, step=0.5, value=float(st.session_state.creatin), key="input_creatin")
     with sup_col2:
         s_omega3  = st.number_input("Omega 3 (g)", min_value=0.0, max_value=20.0, step=0.5, value=float(st.session_state.omega3),  key="input_omega3")
     with sup_col3:
+        st.markdown("<div style='height:1.9rem'></div>", unsafe_allow_html=True)
         s_vitamine = st.checkbox("🧡 Vitamine & Zink (D3/K2, Multi, Zink)", value=st.session_state.vitamine, key="cb_vitamine")
 
     # ── SPEICHERN ────────────────────────────────────────────────────────────
@@ -685,6 +686,17 @@ with tab_checkin:
 # ╚══════════════════════════════════════════════════════════════════════════╝
 
 with tab_progress:
+
+    # ── Einstellungen (immer sichtbar) ────────────────────────────────────────
+    with st.expander("⚙️ Einstellungen"):
+        st.markdown("**Challenge zurücksetzen**")
+        st.caption("Setzt das Startdatum zurück sodass die Challenge neu gestartet werden kann. Deine bisherigen Log-Einträge bleiben erhalten.")
+        if st.button("🔄 Startdatum zurücksetzen", key="reset_btn"):
+            db.set_setting("startdatum", "")
+            for key in list(st.session_state.keys()):
+                del st.session_state[key]
+            st.success("✅ Startdatum zurückgesetzt – du kannst die Challenge neu starten.")
+            st.rerun()
 
     if len(alle_logs) == 0:
         st.info("Noch keine Daten vorhanden. Starte mit deinem ersten Check-In!")
@@ -819,14 +831,3 @@ with tab_progress:
                 </div>
                 """, unsafe_allow_html=True)
 
-        # ── Einstellungen (versteckt, für Reset/Test) ─────────────────────────
-        st.write("")
-        with st.expander("⚙️ Einstellungen"):
-            st.markdown("**Challenge zurücksetzen**")
-            st.caption("Setzt das Startdatum zurück, sodass die Challenge neu gestartet werden kann. Deine bisherigen Log-Einträge bleiben erhalten.")
-            if st.button("🔄 Startdatum zurücksetzen", key="reset_btn"):
-                db.set_setting("startdatum", "")
-                for key in list(st.session_state.keys()):
-                    del st.session_state[key]
-                st.success("✅ Startdatum zurückgesetzt – du kannst die Challenge neu starten.")
-                st.rerun()
