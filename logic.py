@@ -7,11 +7,13 @@ from typing import Optional
 import config
 
 
-def berechne_tag_nummer(heute: date = None) -> int:
+def berechne_tag_nummer(heute: date = None, startdatum: date = None) -> int:
     """Wie viele Tage seit Startdatum (inkl. heute)? Min. 1, Max. 90."""
     if heute is None:
         heute = date.today()
-    delta = (heute - config.STARTDATUM).days + 1
+    if startdatum is None:
+        return 1
+    delta = (heute - startdatum).days + 1
     return max(1, min(delta, config.CHALLENGE_TAGE))
 
 
@@ -64,9 +66,9 @@ def pruefe_plateau(gewichtsverlauf: list[dict]) -> bool:
     return delta < config.PLATEAU_DELTA_KG
 
 
-def foto_erinnerung_aktiv(logs: list[dict]) -> bool:
+def foto_erinnerung_aktiv(logs: list[dict], startdatum: date = None) -> bool:
     """True, wenn heute ein 14-Tage-Foto-Check-In fällig ist."""
-    tag_nr = berechne_tag_nummer()
+    tag_nr = berechne_tag_nummer(startdatum=startdatum)
     return tag_nr > 0 and (tag_nr % config.FOTO_ERINNERUNG_TAGE == 0)
 
 

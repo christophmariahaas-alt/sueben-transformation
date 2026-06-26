@@ -6,7 +6,7 @@ Hier anpassen, um Ziele global zu ändern.
 from datetime import date
 
 # ── Nutzer-Profil ────────────────────────────────────────────────────────────
-STARTDATUM        = date(2026, 6, 26)
+STARTDATUM        = None  # Wird dynamisch aus der Datenbank geladen
 STARTGEWICHT_KG   = 69.5
 GROESSE_CM        = 173
 ALTER_JAHRE       = 39

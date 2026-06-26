@@ -174,6 +174,19 @@ def senke_kcal_ziel(reduktion_kcal: float, reduktion_kh_g: float) -> None:
     set_setting("kh_ziel",   str(round(get_kh_ziel()   - reduktion_kh_g, 1)))
 
 
+def get_startdatum() -> Optional[date]:
+    """Gibt das gespeicherte Startdatum zurück, oder None wenn noch nicht gestartet."""
+    val = get_setting("startdatum")
+    if val:
+        return date.fromisoformat(val)
+    return None
+
+
+def set_startdatum(d: date) -> None:
+    """Setzt das Startdatum der Challenge (einmalig)."""
+    set_setting("startdatum", d.isoformat())
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 # TAGES-LOGS SPEICHERN & LADEN
 # ══════════════════════════════════════════════════════════════════════════════
