@@ -388,6 +388,33 @@ st.markdown("""
       padding: 0.45rem 0.9rem !important;
       letter-spacing: 0.08em !important;
     }
+    /* Streamlit element gaps auf Mobil reduzieren */
+    .stTabs [data-baseweb="tab-panel"] > div > div {
+      gap: 0.5rem !important;
+    }
+    div[data-testid="stVerticalBlock"] > div[data-testid="stVerticalBlockBorderWrapper"],
+    div[data-testid="stVerticalBlock"] > div.stMarkdown,
+    div[data-testid="stVerticalBlock"] > div[data-testid="stHorizontalBlock"] {
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
+    }
+    /* Datum-Picker, Tag-Anzeige, Divider enger */
+    div[data-testid="stDateInput"] {
+      margin-bottom: 0.1rem !important;
+    }
+    hr {
+      margin: 0.4rem 0 !important;
+    }
+    div[data-testid="stNumberInput"] {
+      margin-bottom: 0 !important;
+    }
+    /* Streamlit Block-Abstände global verkleinern */
+    .block-container {
+      padding-top: 0.5rem !important;
+    }
+    div[data-testid="stVerticalBlock"] {
+      gap: 0.4rem !important;
+    }
   }
 
   /* ── Expander ────────────────────────────────────────────────────────── */
