@@ -26,7 +26,10 @@ def _get_pg_conn():
     """PostgreSQL-Verbindung über Supabase DATABASE_URL."""
     import psycopg2
     import psycopg2.extras
-    conn = psycopg2.connect(st.secrets["DATABASE_URL"], sslmode="require")
+    url = st.secrets["DATABASE_URL"]
+    if "sslmode" not in url:
+        url += "?sslmode=require"
+    conn = psycopg2.connect(url)
     return conn
 
 
