@@ -773,8 +773,31 @@ with tab_checkin:
             st.success(f"✅ Neues Kalorienziel: {kcal_ziel:.0f} kcal")
             st.rerun()
 
+    # Hilfsfunktion: aktuellen Stand speichern
+    def _do_save(gewicht, schlaf, s_creatin, s_omega3, s_vitamine,
+                 h_schritte, h_wasser, h_training, h_neat, h_clean):
+        mahlzeiten = [
+            {
+                "name":    st.session_state.get(f"slot_name_{i}", f"Mahlzeit {i+1}"),
+                "kcal":    st.session_state.get(f"slot_kcal_{i}", 0.0),
+                "protein": st.session_state.get(f"slot_prot_{i}", 0.0),
+            }
+            for i in range(len(st.session_state.slots))
+        ]
+        db.save_daily_log(
+            log_date=ziel_datum,
+            gewicht_kg=gewicht, schlaf_std=schlaf,
+            mahlzeiten=mahlzeiten,
+            habits={"schritte": h_schritte, "wasser": h_wasser,
+                    "training": h_training, "neat": h_neat, "clean": h_clean},
+            supplements={"creatin_g": s_creatin, "omega3_g": s_omega3, "vitamine": s_vitamine},
+        )
+        st.session_state.gespeichert = True
+        st.session_state.slots = mahlzeiten
+        return mahlzeiten
+
     # ── A. MORGENS ───────────────────────────────────────────────────────────
-    st.markdown("<div class='section-header'>Morgens &nbsp;·&nbsp; Schnelle Kennzahlen</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-header'>Morgens &nbsp;·&nbsp; Kennzahlen & Supplements</div>", unsafe_allow_html=True)
 
     col_g, col_s = st.columns(2)
     with col_g:
@@ -787,57 +810,55 @@ with tab_checkin:
         )
     with col_s:
         schlaf = st.number_input(
-            "😴 Schlafdauer (Stunden)",
+            "😴 Schlaf (Stunden)",
             min_value=0.0, max_value=24.0, step=0.25,
             value=float(st.session_state.schlaf),
             key="input_schlaf",
         )
 
-    # ── Supplements ──────────────────────────────────────────────────────────
-    st.markdown("<div style='font-size:0.6rem;font-weight:700;color:#AAAAAA;text-transform:uppercase;letter-spacing:0.22em;margin:1rem 0 0.5rem 0;'>💊 Supplements</div>", unsafe_allow_html=True)
+    st.markdown("<div style='font-size:0.6rem;font-weight:700;color:#AAAAAA;text-transform:uppercase;letter-spacing:0.22em;margin:0.8rem 0 0.4rem 0;'>💊 Supplements</div>", unsafe_allow_html=True)
     sup_col1, sup_col2, sup_col3 = st.columns(3)
     with sup_col1:
         s_creatin = st.number_input(
-            "Creatin (g)",
-            min_value=0.0, max_value=20.0, step=0.5,
-            value=float(st.session_state.creatin),
-            key="input_creatin",
-            format="%.1f",
+            "Creatin (g)", min_value=0.0, max_value=20.0, step=0.5,
+            value=float(st.session_state.creatin), key="input_creatin", format="%.1f",
         )
     with sup_col2:
         s_omega3 = st.number_input(
-            "Omega 3 (g)",
-            min_value=0.0, max_value=20.0, step=0.5,
-            value=float(st.session_state.omega3),
-            key="input_omega3",
-            format="%.1f",
+            "Omega 3 (g)", min_value=0.0, max_value=20.0, step=0.5,
+            value=float(st.session_state.omega3), key="input_omega3", format="%.1f",
         )
     with sup_col3:
         st.markdown("<div style='font-size:0.75rem;color:#555;margin-bottom:0.3rem;'>Vitamine & Zink</div>", unsafe_allow_html=True)
-        s_vitamine = st.checkbox(
-            "D3/K2 · Multi · Zink",
-            value=st.session_state.vitamine,
-            key="cb_vitamine",
-        )
+        s_vitamine = st.checkbox("D3/K2 · Multi · Zink", value=st.session_state.vitamine, key="cb_vitamine")
+
+    # Platzhalter-Habits für den Morgens-Save (noch unbekannt → aus session_state)
+    _h_s = st.session_state.get("saved_schritte", st.session_state.schritte)
+    _h_w = st.session_state.get("saved_wasser",   st.session_state.wasser)
+    _h_t = st.session_state.get("saved_training", st.session_state.training)
+    _h_n = st.session_state.get("saved_neat",     st.session_state.neat)
+    _h_c = st.session_state.get("saved_clean",    st.session_state.clean)
+
+    if st.button("Morgens einloggen", use_container_width=True, key="save_morgens"):
+        _do_save(gewicht, schlaf, s_creatin, s_omega3, s_vitamine,
+                 _h_s, _h_w, _h_t, _h_n, _h_c)
+        st.success("✅ Morgen-Daten gespeichert!")
+        st.rerun()
 
     # ── B. ERNÄHRUNG ─────────────────────────────────────────────────────────
     st.markdown("<div class='section-header'>Ernährung &nbsp;·&nbsp; Makro-Tracking</div>", unsafe_allow_html=True)
     st.markdown(
         f"<div style='font-size:0.75rem;color:#888;margin:-0.5rem 0 0.6rem 0;'>"
         f"Tagesziel: <strong style='color:#333;'>max. {kcal_ziel:.0f} kcal</strong>"
-        f" &nbsp;·&nbsp; "
-        f"<strong style='color:#333;'>mind. {config.PROTEIN_ZIEL_G} g Protein</strong>"
-        f"</div>",
+        f" &nbsp;·&nbsp; <strong style='color:#333;'>mind. {config.PROTEIN_ZIEL_G} g Protein</strong></div>",
         unsafe_allow_html=True,
     )
 
-    # Live-Makro-Übersicht
     kcal_summe, protein_summe = berechne_slot_summen()
     kcal_pct, kcal_farbe = logic.berechne_kcal_fortschritt(kcal_summe, kcal_ziel)
     prot_pct   = min((protein_summe / config.PROTEIN_ZIEL_G) * 100, 100)
     prot_farbe = config.SUCCESS_COLOR if prot_pct >= 100 else (config.WARNING_COLOR if prot_pct >= 80 else config.ERROR_COLOR)
     rest_kcal  = max(0, kcal_ziel - kcal_summe)
-    rest_farbe = config.SUCCESS_COLOR if rest_kcal > 200 else config.WARNING_COLOR
 
     m1, m2, m3 = st.columns(3)
     with m1:
@@ -850,9 +871,7 @@ with tab_checkin:
         <div class='metric-card'>
           <div style='display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-bottom:0.1rem;'>
             <div style='width:5px;height:5px;border-radius:50%;background:{rest_dot};flex-shrink:0;'></div>
-            <div class='metric-value'>
-              {rest_kcal:.0f}<span style='font-size:0.72rem;color:#CCC;font-weight:400;margin-left:3px;'>kcal</span>
-            </div>
+            <div class='metric-value'>{rest_kcal:.0f}<span style='font-size:0.72rem;color:#CCC;font-weight:400;margin-left:3px;'>kcal</span></div>
           </div>
           <div class='metric-label'>Noch verfügbar</div>
           <div class='progress-bar-wrap'>
@@ -864,61 +883,53 @@ with tab_checkin:
 
     st.write("")
 
-    # ── Mahlzeiten-Slots ─────────────────────────────────────────────────────
     for i, slot in enumerate(st.session_state.slots):
         st.markdown(f"<div class='meal-slot-header'>Mahlzeit {i+1}</div>", unsafe_allow_html=True)
-
         sc1, sc2, sc3 = st.columns([3, 2, 2])
         with sc1:
-            name = st.text_input(
-                "Bezeichnung",
-                value=slot.get("name", f"Mahlzeit {i+1}"),
-                key=f"slot_name_{i}",
-                placeholder="z.B. Frühstück, Mittagessen...",
-            )
+            name = st.text_input("Bezeichnung", value=slot.get("name", f"Mahlzeit {i+1}"),
+                                 key=f"slot_name_{i}", placeholder="z.B. Frühstück...")
             st.session_state.slots[i]["name"] = name
-
         with sc2:
             st.markdown("<span class='meal-field-label'>Kalorien (kcal)</span>", unsafe_allow_html=True)
-            kcal_val = st.number_input(
-                "kcal",
-                min_value=0.0, max_value=5000.0, step=5.0,
-                value=float(slot.get("kcal", 0)),
-                key=f"slot_kcal_{i}",
-                label_visibility="collapsed",
-            )
+            kcal_val = st.number_input("kcal", min_value=0.0, max_value=5000.0, step=5.0,
+                                       value=float(slot.get("kcal", 0)), key=f"slot_kcal_{i}",
+                                       label_visibility="collapsed")
             st.session_state.slots[i]["kcal"] = kcal_val
-
         with sc3:
             st.markdown("<span class='meal-field-label'>Protein (g)</span>", unsafe_allow_html=True)
-            protein_val = st.number_input(
-                "Protein (g)",
-                min_value=0.0, max_value=500.0, step=1.0,
-                value=float(slot.get("protein", 0)),
-                key=f"slot_prot_{i}",
-                label_visibility="collapsed",
-            )
+            protein_val = st.number_input("Protein (g)", min_value=0.0, max_value=500.0, step=1.0,
+                                          value=float(slot.get("protein", 0)), key=f"slot_prot_{i}",
+                                          label_visibility="collapsed")
             st.session_state.slots[i]["protein"] = protein_val
-
-        # Sjard-Tipp bei niedrigem Protein
         if kcal_val > 0 and protein_val < config.PROTEIN_SLOT_WARN:
-            st.markdown(
-                f"<div class='warn-box'>💡 Sjard-Tipp: Erhöhe das Protein! "
-                f"(Ziel ≥ {config.PROTEIN_SLOT_WARN}g pro Mahlzeit)</div>",
-                unsafe_allow_html=True,
-            )
-
+            st.markdown(f"<div class='warn-box'>💡 Sjard-Tipp: Mehr Protein! (Ziel ≥ {config.PROTEIN_SLOT_WARN}g)</div>",
+                        unsafe_allow_html=True)
         st.write("")
 
-    if st.button("+ Weiteren Slot hinzufügen"):
+    if st.button("+ Mahlzeit hinzufügen", key="add_slot"):
         n = len(st.session_state.slots) + 1
         st.session_state.slots.append({"name": f"Mahlzeit {n}", "kcal": 0.0, "protein": 0.0})
+        st.rerun()
+
+    if st.button("Mahlzeiten einloggen", use_container_width=True, key="save_ernaehrung"):
+        mahlzeiten = _do_save(gewicht, schlaf, s_creatin, s_omega3, s_vitamine,
+                              _h_s, _h_w, _h_t, _h_n, _h_c)
+        kcal_ok = sum(m["kcal"]    for m in mahlzeiten) <= kcal_ziel
+        prot_ok = sum(m["protein"] for m in mahlzeiten) >= config.PROTEIN_ZIEL_G
+        if kcal_ok and prot_ok:
+            st.success("✅ Mahlzeiten gespeichert! Kalorien & Protein im Ziel.")
+        elif kcal_ok:
+            st.success("✅ Gespeichert! Kalorien passen – beim nächsten Mal mehr Protein.")
+        elif prot_ok:
+            st.warning("⚠️ Gespeichert! Protein top – Kalorien leicht drüber.")
+        else:
+            st.info("💾 Mahlzeiten gespeichert.")
         st.rerun()
 
     # ── C. ABENDS: HABITS ────────────────────────────────────────────────────
     st.markdown("<div class='section-header'>Abends &nbsp;·&nbsp; Habits</div>", unsafe_allow_html=True)
 
-    st.markdown("**✅ Tägliche Gewohnheiten**")
     hab_col1, hab_col2 = st.columns(2)
     with hab_col1:
         h_schritte = st.checkbox(f"{config.HABIT_SCHRITTE_ZIEL:,} Schritte".replace(",", "."), value=st.session_state.schritte, key="cb_schritte")
@@ -926,117 +937,36 @@ with tab_checkin:
         h_training = st.checkbox("Krafttraining absolviert",                                    value=st.session_state.training,  key="cb_training")
     with hab_col2:
         h_neat  = st.checkbox("NEAT-Fokus (Treppen, Stehschreibtisch)", value=st.session_state.neat,  key="cb_neat")
-        h_clean = st.checkbox("Clean Eating eingehalten (80/20)",        value=st.session_state.clean, key="cb_clean")
+        h_clean = st.checkbox("Clean Eating (80/20)",                    value=st.session_state.clean, key="cb_clean")
 
     habits_erreicht = sum([h_schritte, h_wasser, h_training, h_neat, h_clean])
     hab_farbe = config.SUCCESS_COLOR if habits_erreicht >= 4 else (config.WARNING_COLOR if habits_erreicht >= 3 else config.ERROR_COLOR)
     st.markdown(
         f"<div style='font-size:0.8rem;color:#64748B;margin-top:0.3rem;'>Habits: {habits_erreicht}/5</div>"
         + fortschrittsbalken(habits_erreicht, 5, hab_farbe),
-        unsafe_allow_html=True
+        unsafe_allow_html=True,
     )
 
-    # ── ZUSAMMENFASSUNG ──────────────────────────────────────────────────────
-    st.write("")
-    st.divider()
-
-    kcal_summe_preview, protein_summe_preview = berechne_slot_summen()
-    habits_liste = []
-    if h_schritte: habits_liste.append("10.000 Schritte")
-    if h_wasser:   habits_liste.append("3,5L Wasser")
-    if h_training: habits_liste.append("Training")
-    if h_neat:     habits_liste.append("NEAT")
-    if h_clean:    habits_liste.append("Clean Eating")
-    habits_str = " · ".join(habits_liste) if habits_liste else "Keine"
-
-    supp_liste = []
-    if s_creatin > 0: supp_liste.append(f"Creatin {s_creatin:.1f}g")
-    if s_omega3 > 0:  supp_liste.append(f"Omega3 {s_omega3:.1f}g")
-    if s_vitamine:    supp_liste.append("Vitamine ✓")
-    supp_str = " · ".join(supp_liste) if supp_liste else "Keine"
-
-    kcal_status_col = "#B8FF00" if kcal_summe_preview <= kcal_ziel else "#EF4444"
-    prot_status_col = "#B8FF00" if protein_summe_preview >= config.PROTEIN_ZIEL_G else "#EAB308"
-
-    st.markdown(f"""
-    <div style='background:#F8F8F8;border:1px solid #E8E8E8;border-radius:12px;
-                padding:1rem 1.1rem;margin-bottom:1rem;'>
-      <div style='font-size:0.6rem;font-weight:700;color:#AAAAAA;text-transform:uppercase;
-                  letter-spacing:0.2em;margin-bottom:0.8rem;'>Tages-Zusammenfassung</div>
-      <div style='display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 1rem;'>
-        <div>
-          <div style='font-size:0.58rem;color:#AAA;text-transform:uppercase;letter-spacing:0.15em;'>Gewicht</div>
-          <div style='font-size:1rem;font-weight:600;color:#111;'>{gewicht:.1f} kg</div>
-        </div>
-        <div>
-          <div style='font-size:0.58rem;color:#AAA;text-transform:uppercase;letter-spacing:0.15em;'>Schlaf</div>
-          <div style='font-size:1rem;font-weight:600;color:#111;'>{schlaf:.1f} h</div>
-        </div>
-        <div>
-          <div style='font-size:0.58rem;color:#AAA;text-transform:uppercase;letter-spacing:0.15em;'>Kalorien</div>
-          <div style='font-size:1rem;font-weight:600;color:{kcal_status_col};'>{kcal_summe_preview:.0f} / {kcal_ziel:.0f} kcal</div>
-        </div>
-        <div>
-          <div style='font-size:0.58rem;color:#AAA;text-transform:uppercase;letter-spacing:0.15em;'>Protein</div>
-          <div style='font-size:1rem;font-weight:600;color:{prot_status_col};'>{protein_summe_preview:.0f} / {config.PROTEIN_ZIEL_G} g</div>
-        </div>
-        <div style='grid-column:1/-1;'>
-          <div style='font-size:0.58rem;color:#AAA;text-transform:uppercase;letter-spacing:0.15em;'>Habits</div>
-          <div style='font-size:0.85rem;font-weight:500;color:#333;'>{habits_str}</div>
-        </div>
-        <div style='grid-column:1/-1;'>
-          <div style='font-size:0.58rem;color:#AAA;text-transform:uppercase;letter-spacing:0.15em;'>Supplements</div>
-          <div style='font-size:0.85rem;font-weight:500;color:#333;'>{supp_str}</div>
-        </div>
-      </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # ── SPEICHERN ────────────────────────────────────────────────────────────
-
-    if st.session_state.gespeichert:
-        label = "heute" if ziel_datum == heute else f"den {ziel_datum.strftime('%d.%m.%Y')}"
-        st.markdown(
-            f"<div class='success-box'>✅ Eintrag für {label} bereits gespeichert – du kannst jederzeit überschreiben.</div>",
-            unsafe_allow_html=True,
-        )
-
-    btn_label = "Tag speichern" if ziel_datum == heute else f"Nachtrag {ziel_datum.strftime('%d.%m.')} speichern"
-    if st.button(btn_label, type="primary", use_container_width=True, key="save_btn"):
-        mahlzeiten = [
-            {
-                "name":    st.session_state.get(f"slot_name_{i}", f"Mahlzeit {i+1}"),
-                "kcal":    st.session_state.get(f"slot_kcal_{i}", 0.0),
-                "protein": st.session_state.get(f"slot_prot_{i}", 0.0),
-            }
-            for i in range(len(st.session_state.slots))
-        ]
-        habits = {
-            "schritte": h_schritte, "wasser": h_wasser,
-            "training": h_training, "neat": h_neat, "clean": h_clean,
-        }
-        supplements = {
-            "creatin_g": s_creatin, "omega3_g": s_omega3, "vitamine": s_vitamine,
-        }
-
-        db.save_daily_log(
-            log_date=ziel_datum, gewicht_kg=gewicht, schlaf_std=schlaf,
-            mahlzeiten=mahlzeiten, habits=habits, supplements=supplements,
-        )
-        st.session_state.gespeichert = True
-        st.session_state.slots = mahlzeiten
-
+    if st.button("Tag abschließen", type="primary", use_container_width=True, key="save_abends"):
+        # Habit-Stand für künftige Morgens-Saves merken
+        st.session_state.saved_schritte = h_schritte
+        st.session_state.saved_wasser   = h_wasser
+        st.session_state.saved_training = h_training
+        st.session_state.saved_neat     = h_neat
+        st.session_state.saved_clean    = h_clean
+        mahlzeiten = _do_save(gewicht, schlaf, s_creatin, s_omega3, s_vitamine,
+                              h_schritte, h_wasser, h_training, h_neat, h_clean)
         kcal_ok = sum(m["kcal"]    for m in mahlzeiten) <= kcal_ziel
         prot_ok = sum(m["protein"] for m in mahlzeiten) >= config.PROTEIN_ZIEL_G
         if kcal_ok and prot_ok:
             st.balloons()
-            st.success("🎉 Perfekt! Kalorien UND Protein im Ziel – Sjard wäre stolz!")
+            st.success("🎉 Perfekter Tag! Kalorien & Protein im Ziel.")
         elif kcal_ok:
-            st.success("✅ Gespeichert! Kalorien stimmen – morgen mehr Protein!")
+            st.success("✅ Tag gespeichert! Kalorien stimmen – morgen mehr Protein.")
         elif prot_ok:
-            st.warning("⚠️ Gespeichert! Protein top – aber Kalorien überschritten!")
+            st.warning("⚠️ Tag gespeichert! Protein top – Kalorien leicht drüber.")
         else:
-            st.info("💾 Gespeichert! Morgen wieder angreifen!")
+            st.info("💾 Tag gespeichert. Morgen wieder angreifen!")
         st.rerun()
 
 
