@@ -310,13 +310,18 @@ st.markdown("""
   .stButton > button[kind="primary"] {
     background: #0A0A0A !important;
     border: none !important;
-    color: #B8FF00 !important;
+    color: #FFFFFF !important;
+    font-family: 'Bebas Neue', sans-serif !important;
+    font-size: 1.2rem !important;
+    letter-spacing: 0.15em !important;
+    font-weight: 400 !important;
     box-shadow: 0 2px 16px rgba(0,0,0,0.18) !important;
   }
   .stButton > button[kind="primary"]:hover {
     background: #1A1A1A !important;
     transform: translateY(-1px) !important;
     box-shadow: 0 6px 28px rgba(0,0,0,0.22) !important;
+    color: #FFFFFF !important;
   }
   .stButton > button[kind="secondary"] {
     background: #FFFFFF !important;
