@@ -1093,39 +1093,33 @@ with tab_progress:
         # ── Habits ────────────────────────────────────────────────────────────
         st.markdown("<div class='section-header'>Habits</div>", unsafe_allow_html=True)
 
-        habit_labels = ["Schritte", "Wasser", "Training", "NEAT", "Clean Eating"]
-        habit_keys_fn = [
-            lambda l: l.get("habit_schritte"),
-            lambda l: l.get("habit_wasser"),
-            lambda l: l.get("habit_training"),
-            lambda l: l.get("habit_neat"),
-            lambda l: l.get("habit_clean"),
+        habit_defs = [
+            ("Schritte",     lambda l: l.get("habit_schritte")),
+            ("Wasser",       lambda l: l.get("habit_wasser")),
+            ("Training",     lambda l: l.get("habit_training")),
+            ("NEAT",         lambda l: l.get("habit_neat")),
+            ("Clean Eating", lambda l: l.get("habit_clean")),
         ]
-        counts = [sum(1 for l in alle_logs if fn(l)) for fn in habit_keys_fn]
-        pcts   = [round(c / total_days * 100) for c in counts]
-        colors = ["#B8FF00" if p >= 80 else "#EAB308" if p >= 50 else "#EF4444" for p in pcts]
 
-        fig_hs = go.Figure(go.Bar(
-            x=habit_labels,
-            y=pcts,
-            marker_color=colors,
-            text=[f"{c}×" for c in counts],
-            textposition="outside",
-            textfont=dict(color="#444444", size=10),
-            hovertemplate="%{x}: %{y}% (%{text})<extra></extra>",
-        ))
-        fig_hs.add_hline(y=80, line=dict(color="#CCCCCC", width=1, dash="dot"),
-                         annotation_text="80%", annotation_font=dict(color="#BBBBBB", size=9))
-        fig_hs.update_layout(
-            paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
-            font=dict(color="#555555", size=11),
-            yaxis=dict(gridcolor="#F0F0F0", range=[0, 120], ticksuffix="%",
-                       tickfont=dict(color="#888")),
-            xaxis=dict(gridcolor="rgba(0,0,0,0)", tickfont=dict(color="#444", size=10)),
-            margin=dict(l=0, r=0, t=10, b=0),
-            showlegend=False,
-        )
-        st.plotly_chart(fig_hs, use_container_width=True, config={"displayModeBar": False})
+        habit_html = "<div style='display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;'>"
+        for name, fn in habit_defs:
+            c        = sum(1 for l in alle_logs if fn(l))
+            streak_h = supp_streak(alle_logs, fn)
+            pct      = round(c / total_days * 100)
+            dot      = "#B8FF00" if pct >= 80 else "#EAB308" if pct >= 50 else "#AAAAAA"
+            habit_html += f"""
+            <div class='metric-card' style='text-align:center;'>
+              <div style='font-size:1.6rem;font-weight:700;color:#111;line-height:1;'>{c}</div>
+              <div style='font-size:0.58rem;color:#AAA;text-transform:uppercase;
+                          letter-spacing:0.15em;margin:0.2rem 0 0.5rem;'>von {total_days} Tagen</div>
+              <div style='background:#F0F0F0;border-radius:999px;height:3px;overflow:hidden;margin-bottom:0.5rem;'>
+                <div style='width:{pct}%;height:100%;background:{dot};border-radius:999px;'></div>
+              </div>
+              <div style='font-size:0.7rem;font-weight:600;color:#333;'>{name}</div>
+              <div style='font-size:0.62rem;color:#AAA;margin-top:0.2rem;'>🔥 {streak_h}d Streak</div>
+            </div>"""
+        habit_html += "</div>"
+        st.markdown(habit_html, unsafe_allow_html=True)
 
         # ── Supplements ───────────────────────────────────────────────────────
         st.markdown("<div class='section-header'>Supplements</div>", unsafe_allow_html=True)
