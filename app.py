@@ -231,6 +231,11 @@ st.markdown("""
     align-items: center;
     gap: 0.6rem;
   }
+  @media (max-width: 480px) {
+    .section-header {
+      margin: 1.2rem 0 0.7rem 0;
+    }
+  }
   .section-header::before {
     content: '';
     display: inline-block;
@@ -429,7 +434,7 @@ if startdatum is None:
     st.markdown(f"""
     <div class='app-header'>
       <div class='app-title'>⚡ PROJECT H90</div>
-      <div class='app-subtitle'>90 Tage bis zur Bestform &nbsp;|&nbsp; FC Suebia Edition</div>
+      <div class='app-subtitle'>90 Tage bis zur Bestform</div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -623,7 +628,7 @@ st.markdown(f"""
   <div style='display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;'>
     <div>
       <div class='app-title'>PROJECT <span>H90</span></div>
-      <div class='app-subtitle'>90 Days to Peak Performance &nbsp;·&nbsp; FC Suebia Edition</div>
+      <div class='app-subtitle'>90 Days to Peak Performance</div>
     </div>
     <div class='header-stats'>
       <div>
@@ -657,7 +662,7 @@ st.markdown(f"""
 
 tab_checkin, tab_progress = st.tabs([
     "Daily Check-In",
-    "Progress Hub",
+    "Progress",
 ])
 
 # ╔══════════════════════════════════════════════════════════════════════════╗
