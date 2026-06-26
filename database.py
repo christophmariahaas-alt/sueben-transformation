@@ -159,6 +159,7 @@ def set_setting(key: str, value: str) -> None:
         conn.commit(); conn.close()
 
 
+@st.cache_data(ttl=120)
 def get_kcal_ziel() -> float:
     val = get_setting("kcal_ziel")
     return float(val) if val else 1993.0
@@ -250,6 +251,10 @@ def save_daily_log(
         """, params)
         conn.commit(); conn.close()
 
+    load_all_logs.clear()
+    get_gewichts_verlauf.clear()
+    get_kcal_ziel.clear()
+
 
 def _row_to_dict(row, keys: list) -> dict:
     """Konvertiert DB-Zeile (Tuple oder sqlite3.Row) in Dict."""
@@ -285,6 +290,7 @@ def load_daily_log(log_date: date) -> Optional[dict]:
         return _row_to_dict(row, _LOG_KEYS) if row else None
 
 
+@st.cache_data(ttl=120)
 def load_all_logs() -> list:
     if _use_postgres():
         conn = _get_pg_conn()
@@ -301,6 +307,7 @@ def load_all_logs() -> list:
         return [_row_to_dict(r, _LOG_KEYS) for r in rows]
 
 
+@st.cache_data(ttl=120)
 def get_gewichts_verlauf() -> list:
     if _use_postgres():
         conn = _get_pg_conn()

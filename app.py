@@ -413,7 +413,7 @@ st.markdown("""
       padding-top: 0.5rem !important;
     }
     div[data-testid="stVerticalBlock"] {
-      gap: 0.4rem !important;
+      gap: 0.2rem !important;
     }
   }
 
@@ -786,6 +786,14 @@ with tab_checkin:
 
     # ── B. ERNÄHRUNG ─────────────────────────────────────────────────────────
     st.markdown("<div class='section-header'>Ernährung &nbsp;·&nbsp; Makro-Tracking</div>", unsafe_allow_html=True)
+    st.markdown(
+        f"<div style='font-size:0.75rem;color:#888;margin:-0.5rem 0 0.6rem 0;'>"
+        f"Tagesziel: <strong style='color:#333;'>max. {kcal_ziel:.0f} kcal</strong>"
+        f" &nbsp;·&nbsp; "
+        f"<strong style='color:#333;'>mind. {config.PROTEIN_ZIEL_G} g Protein</strong>"
+        f"</div>",
+        unsafe_allow_html=True,
+    )
 
     # Live-Makro-Übersicht
     kcal_summe, protein_summe = berechne_slot_summen()
@@ -918,9 +926,63 @@ with tab_checkin:
         key="cb_vitamine",
     )
 
-    # ── SPEICHERN ────────────────────────────────────────────────────────────
+    # ── ZUSAMMENFASSUNG ──────────────────────────────────────────────────────
     st.write("")
     st.divider()
+
+    kcal_summe_preview, protein_summe_preview = berechne_slot_summen()
+    habits_liste = []
+    if h_schritte: habits_liste.append("10.000 Schritte")
+    if h_wasser:   habits_liste.append("3,5L Wasser")
+    if h_training: habits_liste.append("Training")
+    if h_neat:     habits_liste.append("NEAT")
+    if h_clean:    habits_liste.append("Clean Eating")
+    habits_str = " · ".join(habits_liste) if habits_liste else "Keine"
+
+    supp_liste = []
+    if s_creatin > 0: supp_liste.append(f"Creatin {s_creatin:.1f}g")
+    if s_omega3 > 0:  supp_liste.append(f"Omega3 {s_omega3:.1f}g")
+    if s_vitamine:    supp_liste.append("Vitamine ✓")
+    supp_str = " · ".join(supp_liste) if supp_liste else "Keine"
+
+    kcal_status_col = "#B8FF00" if kcal_summe_preview <= kcal_ziel else "#EF4444"
+    prot_status_col = "#B8FF00" if protein_summe_preview >= config.PROTEIN_ZIEL_G else "#EAB308"
+
+    st.markdown(f"""
+    <div style='background:#F8F8F8;border:1px solid #E8E8E8;border-radius:12px;
+                padding:1rem 1.1rem;margin-bottom:1rem;'>
+      <div style='font-size:0.6rem;font-weight:700;color:#AAAAAA;text-transform:uppercase;
+                  letter-spacing:0.2em;margin-bottom:0.8rem;'>Tages-Zusammenfassung</div>
+      <div style='display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 1rem;'>
+        <div>
+          <div style='font-size:0.58rem;color:#AAA;text-transform:uppercase;letter-spacing:0.15em;'>Gewicht</div>
+          <div style='font-size:1rem;font-weight:600;color:#111;'>{gewicht:.1f} kg</div>
+        </div>
+        <div>
+          <div style='font-size:0.58rem;color:#AAA;text-transform:uppercase;letter-spacing:0.15em;'>Schlaf</div>
+          <div style='font-size:1rem;font-weight:600;color:#111;'>{schlaf:.1f} h</div>
+        </div>
+        <div>
+          <div style='font-size:0.58rem;color:#AAA;text-transform:uppercase;letter-spacing:0.15em;'>Kalorien</div>
+          <div style='font-size:1rem;font-weight:600;color:{kcal_status_col};'>{kcal_summe_preview:.0f} / {kcal_ziel:.0f} kcal</div>
+        </div>
+        <div>
+          <div style='font-size:0.58rem;color:#AAA;text-transform:uppercase;letter-spacing:0.15em;'>Protein</div>
+          <div style='font-size:1rem;font-weight:600;color:{prot_status_col};'>{protein_summe_preview:.0f} / {config.PROTEIN_ZIEL_G} g</div>
+        </div>
+        <div style='grid-column:1/-1;'>
+          <div style='font-size:0.58rem;color:#AAA;text-transform:uppercase;letter-spacing:0.15em;'>Habits</div>
+          <div style='font-size:0.85rem;font-weight:500;color:#333;'>{habits_str}</div>
+        </div>
+        <div style='grid-column:1/-1;'>
+          <div style='font-size:0.58rem;color:#AAA;text-transform:uppercase;letter-spacing:0.15em;'>Supplements</div>
+          <div style='font-size:0.85rem;font-weight:500;color:#333;'>{supp_str}</div>
+        </div>
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # ── SPEICHERN ────────────────────────────────────────────────────────────
 
     if st.session_state.gespeichert:
         label = "heute" if ziel_datum == heute else f"den {ziel_datum.strftime('%d.%m.%Y')}"
@@ -988,51 +1050,60 @@ with tab_progress:
     if len(alle_logs) == 0:
         st.info("Noch keine Daten vorhanden. Starte mit deinem ersten Check-In!")
     else:
-        st.markdown("<div class='section-header'>Übersicht</div>", unsafe_allow_html=True)
-
-        streak_col, days_col, avg_col, best_col = st.columns(4)
-        with streak_col:
-            st.markdown(f"""
-            <div class='metric-card'>
-              <div class='streak-display'>{streak}</div>
-              <div class='streak-label'>Streak</div>
-            </div>
-            """, unsafe_allow_html=True)
-        with days_col:
-            st.markdown(f"""
-            <div class='metric-card'>
-              <div class='metric-value'>{len(alle_logs)}</div>
-              <div class='metric-label'>Tage geloggt</div>
-              <div class='metric-sub'>von 90 gesamt</div>
-            </div>
-            """, unsafe_allow_html=True)
-
+        total_days  = len(alle_logs)
         gew_verlauf = db.get_gewichts_verlauf()
-        if gew_verlauf:
-            letzte_7 = [r["gewicht_kg"] for r in gew_verlauf[-7:] if r["gewicht_kg"]]
-            avg_gew  = sum(letzte_7) / len(letzte_7) if letzte_7 else 0
-            delta    = avg_gew - config.STARTGEWICHT_KG
-            delta_str  = f"{'–' if delta < 0 else '+'}{abs(delta):.1f} kg"
-            delta_farbe = config.SUCCESS_COLOR if delta < 0 else config.ERROR_COLOR
 
-            with avg_col:
-                st.markdown(f"""
-                <div class='metric-card'>
-                  <div class='metric-value' style='font-size:1.6rem;'>{avg_gew:.1f}<span style='font-size:0.8rem;color:#64748B;'>kg</span></div>
-                  <div class='metric-label'>Ø Gewicht (7d)</div>
-                  <div class='metric-sub'>Start: {config.STARTGEWICHT_KG} kg</div>
-                </div>
-                """, unsafe_allow_html=True)
-            with best_col:
-                st.markdown(f"""
-                <div class='metric-card'>
-                  <div class='metric-value' style='font-size:1.6rem;color:{delta_farbe};'>{delta_str}</div>
-                  <div class='metric-label'>Gesamt-Veränderung</div>
-                  <div class='metric-sub'>seit Start</div>
-                </div>
-                """, unsafe_allow_html=True)
+        # ── Kennzahlen ───────────────────────────────────────────────────────
+        st.markdown("<div class='section-header'>Kennzahlen</div>", unsafe_allow_html=True)
 
-        # ── Gewichtskurve ─────────────────────────────────────────────────────
+        letzte_7  = [r["gewicht_kg"] for r in gew_verlauf[-7:] if r.get("gewicht_kg")] if gew_verlauf else []
+        avg_gew   = sum(letzte_7) / len(letzte_7) if letzte_7 else None
+        delta     = (avg_gew - config.STARTGEWICHT_KG) if avg_gew else None
+        delta_str = f"{'–' if delta < 0 else '+'}{abs(delta):.1f} kg" if delta is not None else "–"
+        delta_col = config.SUCCESS_COLOR if (delta or 0) < 0 else config.ERROR_COLOR
+
+        avg_kcal_tage   = [l for l in alle_logs if l.get("kcal_gesamt")]
+        avg_kcal        = sum(l["kcal_gesamt"] for l in avg_kcal_tage) / len(avg_kcal_tage) if avg_kcal_tage else 0
+        avg_prot_tage   = [l for l in alle_logs if l.get("protein_gesamt")]
+        avg_prot        = sum(l["protein_gesamt"] for l in avg_prot_tage) / len(avg_prot_tage) if avg_prot_tage else 0
+        kcal_col        = config.SUCCESS_COLOR if avg_kcal <= kcal_ziel else config.ERROR_COLOR
+        prot_col        = config.SUCCESS_COLOR if avg_prot >= config.PROTEIN_ZIEL_G else config.WARNING_COLOR
+
+        st.markdown(f"""
+        <div style='display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:0.4rem;'>
+          <div class='metric-card'>
+            <div class='streak-display'>{streak}</div>
+            <div class='streak-label'>Streak</div>
+          </div>
+          <div class='metric-card'>
+            <div class='metric-value'>{total_days}</div>
+            <div class='metric-label'>Tage geloggt</div>
+            <div class='metric-sub'>von 90 gesamt</div>
+          </div>
+          <div class='metric-card'>
+            <div class='metric-value' style='font-size:1.5rem;'>{avg_gew:.1f if avg_gew else "–"}<span style='font-size:0.75rem;color:#64748B;'> kg</span></div>
+            <div class='metric-label'>Ø Gewicht (7d)</div>
+            <div class='metric-sub'>Start: {config.STARTGEWICHT_KG} kg</div>
+          </div>
+          <div class='metric-card'>
+            <div class='metric-value' style='font-size:1.5rem;color:{delta_col};'>{delta_str}</div>
+            <div class='metric-label'>Gewichtsveränderung</div>
+            <div class='metric-sub'>seit Challengestart</div>
+          </div>
+          <div class='metric-card'>
+            <div class='metric-value' style='font-size:1.4rem;color:{kcal_col};'>{avg_kcal:.0f}</div>
+            <div class='metric-label'>Ø Kalorien / Tag</div>
+            <div class='metric-sub'>Ziel: {kcal_ziel:.0f} kcal</div>
+          </div>
+          <div class='metric-card'>
+            <div class='metric-value' style='font-size:1.4rem;color:{prot_col};'>{avg_prot:.0f} g</div>
+            <div class='metric-label'>Ø Protein / Tag</div>
+            <div class='metric-sub'>Ziel: {config.PROTEIN_ZIEL_G} g</div>
+          </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # ── Gewichtsverlauf ───────────────────────────────────────────────────
         if gew_verlauf:
             st.markdown("<div class='section-header'>Gewichtsverlauf</div>", unsafe_allow_html=True)
 
@@ -1045,48 +1116,95 @@ with tab_progress:
             fig.add_trace(go.Scatter(
                 x=df_gew["log_date"], y=df_gew["gewicht_kg"],
                 name="Tagesgewicht", mode="lines+markers",
-                line=dict(color="#475569", width=1, dash="dot"),
-                marker=dict(size=4, color="#64748B"),
-                hovertemplate="%{x|%d.%m.%Y}: <b>%{y:.1f} kg</b><extra></extra>",
+                line=dict(color="#CCCCCC", width=1, dash="dot"),
+                marker=dict(size=5, color="#AAAAAA"),
+                hovertemplate="%{x|%d.%m.}: <b>%{y:.1f} kg</b><extra></extra>",
             ))
             df_avg = df_gew.dropna(subset=["avg_7d"])
             if not df_avg.empty:
                 fig.add_trace(go.Scatter(
                     x=df_avg["log_date"], y=df_avg["avg_7d"],
-                    name="7-Tage-Durchschnitt", mode="lines",
-                    line=dict(color=config.BRAND_COLOR, width=3),
-                    hovertemplate="%{x|%d.%m.%Y}: <b>%{y:.2f} kg</b> (Ø7d)<extra></extra>",
+                    name="7-Tage-Ø", mode="lines",
+                    line=dict(color="#B8FF00", width=3),
+                    hovertemplate="%{x|%d.%m.}: <b>%{y:.2f} kg</b> (Ø7d)<extra></extra>",
                 ))
             fig.add_hline(
                 y=config.STARTGEWICHT_KG,
-                line=dict(color="#374151", width=1, dash="dash"),
+                line=dict(color="#DDDDDD", width=1, dash="dash"),
                 annotation_text=f"Start {config.STARTGEWICHT_KG} kg",
-                annotation_font=dict(color="#6B7280", size=11),
+                annotation_font=dict(color="#999999", size=10),
             )
             fig.update_layout(
                 paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
-                font=dict(color="#94A3B8", size=12),
-                legend=dict(bgcolor="rgba(30,33,48,0.8)", bordercolor="#2D3748", borderwidth=1),
-                xaxis=dict(gridcolor="#1E2A3A", tickformat="%d.%m"),
-                yaxis=dict(gridcolor="#1E2A3A", title="Gewicht (kg)", tickformat=".1f"),
-                margin=dict(l=0, r=0, t=20, b=0),
+                font=dict(color="#555555", size=11),
+                legend=dict(
+                    bgcolor="rgba(255,255,255,0.9)", bordercolor="#EBEBEB",
+                    borderwidth=1, font=dict(color="#333333", size=10),
+                    orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0,
+                ),
+                xaxis=dict(gridcolor="#F0F0F0", tickformat="%d.%m", tickfont=dict(color="#888")),
+                yaxis=dict(gridcolor="#F0F0F0", tickformat=".1f", tickfont=dict(color="#888")),
+                margin=dict(l=0, r=0, t=30, b=0),
                 hovermode="x unified",
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
 
-        # ── Letzte 14 Tage Tabelle ────────────────────────────────────────────
+        # ── Habits & Supplements ──────────────────────────────────────────────
+        st.markdown("<div class='section-header'>Habits &amp; Supplements</div>", unsafe_allow_html=True)
+
+        habit_labels = ["Schritte", "Wasser", "Training", "NEAT", "Clean Eating", "Creatin", "Omega 3", "Vitamine"]
+        habit_keys_fn = [
+            lambda l: l.get("habit_schritte"),
+            lambda l: l.get("habit_wasser"),
+            lambda l: l.get("habit_training"),
+            lambda l: l.get("habit_neat"),
+            lambda l: l.get("habit_clean"),
+            lambda l: (l.get("supp_creatin_g") or 0) > 0,
+            lambda l: (l.get("supp_omega3_g")  or 0) > 0,
+            lambda l: l.get("supp_vitamine"),
+        ]
+        counts   = [sum(1 for l in alle_logs if fn(l)) for fn in habit_keys_fn]
+        pcts     = [round(c / total_days * 100) for c in counts]
+        colors   = ["#B8FF00" if p >= 80 else "#EAB308" if p >= 50 else "#EF4444" for p in pcts]
+        # Supplements etwas abdunkeln zur Unterscheidung
+        colors[5] = "#8FCC00" if pcts[5] >= 80 else "#C8941A" if pcts[5] >= 50 else "#C03030"
+        colors[6] = colors[5]
+        colors[7] = colors[5]
+
+        fig_hs = go.Figure(go.Bar(
+            x=habit_labels,
+            y=pcts,
+            marker_color=colors,
+            text=[f"{c}×" for c in counts],
+            textposition="outside",
+            textfont=dict(color="#444444", size=10),
+            hovertemplate="%{x}<br>%{y}% · %{text}<extra></extra>",
+        ))
+        fig_hs.add_hline(y=80, line=dict(color="#CCCCCC", width=1, dash="dot"),
+                         annotation_text="80%", annotation_font=dict(color="#BBBBBB", size=9))
+        fig_hs.update_layout(
+            paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+            font=dict(color="#555555", size=11),
+            yaxis=dict(gridcolor="#F0F0F0", range=[0, 120], ticksuffix="%",
+                       tickfont=dict(color="#888")),
+            xaxis=dict(gridcolor="rgba(0,0,0,0)", tickfont=dict(color="#444", size=10)),
+            margin=dict(l=0, r=0, t=10, b=0),
+            showlegend=False,
+        )
+        st.plotly_chart(fig_hs, use_container_width=True, config={"displayModeBar": False})
+
+        # ── Letzte 14 Tage ────────────────────────────────────────────────────
         st.markdown("<div class='section-header'>Letzte 14 Tage</div>", unsafe_allow_html=True)
         letzte_logs = alle_logs[-14:][::-1]
         if letzte_logs:
             tabellen_data = []
             for log in letzte_logs:
                 tabellen_data.append({
-                    "Datum":        log["log_date"],
-                    "Gewicht (kg)": f"{log['gewicht_kg']:.1f}" if log.get("gewicht_kg") else "–",
-                    "kcal":         f"{log['kcal_gesamt']:.0f}" if log.get("kcal_gesamt") else "–",
-                    "Protein (g)":  f"{log['protein_gesamt']:.0f}" if log.get("protein_gesamt") else "–",
-                    "Schlaf (h)":   f"{log['schlaf_std']:.1f}" if log.get("schlaf_std") else "–",
-                    "Habits":       sum([
+                    "Datum":       log["log_date"],
+                    "Gewicht":     f"{log['gewicht_kg']:.1f} kg" if log.get("gewicht_kg") else "–",
+                    "kcal":        int(log["kcal_gesamt"]) if log.get("kcal_gesamt") else 0,
+                    "Protein":     int(log["protein_gesamt"]) if log.get("protein_gesamt") else 0,
+                    "Habits":      sum([
                         bool(log.get("habit_schritte")), bool(log.get("habit_wasser")),
                         bool(log.get("habit_training")), bool(log.get("habit_neat")),
                         bool(log.get("habit_clean")),
@@ -1096,26 +1214,37 @@ with tab_progress:
                 pd.DataFrame(tabellen_data),
                 use_container_width=True, hide_index=True,
                 column_config={
-                    "Habits": st.column_config.ProgressColumn("Habits", min_value=0, max_value=5, format="%d/5"),
+                    "kcal":    st.column_config.ProgressColumn("kcal", min_value=0, max_value=int(kcal_ziel), format="%d"),
+                    "Protein": st.column_config.ProgressColumn("Protein (g)", min_value=0, max_value=config.PROTEIN_ZIEL_G, format="%d g"),
+                    "Habits":  st.column_config.ProgressColumn("Habits", min_value=0, max_value=5, format="%d/5"),
                 },
             )
 
         # ── Aktuelle Ziele ────────────────────────────────────────────────────
         st.markdown("<div class='section-header'>Aktuelle Ziele</div>", unsafe_allow_html=True)
         kh_aktuell = db.get_kh_ziel()
-        ziel_cols  = st.columns(4)
-        for col, (label, wert, sub) in zip(ziel_cols, [
-            ("🔥 Kalorien", f"{kcal_ziel:.0f} kcal", f"TDEE: {config.TDEE_KCAL} kcal"),
-            ("💪 Protein",  f"{config.PROTEIN_ZIEL_G} g", "2,3g/kg Körpergew."),
-            ("🍞 Kohlenhydrate", f"{kh_aktuell:.0f} g", "Richtwert"),
-            ("🫒 Fett",     f"{config.FETT_RICHTWERT_G} g", "Richtwert"),
-        ]):
-            with col:
-                st.markdown(f"""
-                <div class='metric-card'>
-                  <div class='metric-value' style='font-size:1.3rem;'>{wert}</div>
-                  <div class='metric-label'>{label}</div>
-                  <div class='metric-sub'>{sub}</div>
-                </div>
-                """, unsafe_allow_html=True)
+        st.markdown(f"""
+        <div style='display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;'>
+          <div class='metric-card'>
+            <div class='metric-value' style='font-size:1.2rem;'>{kcal_ziel:.0f} kcal</div>
+            <div class='metric-label'>Kalorien / Tag</div>
+            <div class='metric-sub'>TDEE: {config.TDEE_KCAL} kcal</div>
+          </div>
+          <div class='metric-card'>
+            <div class='metric-value' style='font-size:1.2rem;'>{config.PROTEIN_ZIEL_G} g</div>
+            <div class='metric-label'>Protein / Tag</div>
+            <div class='metric-sub'>2,3 g / kg Körpergew.</div>
+          </div>
+          <div class='metric-card'>
+            <div class='metric-value' style='font-size:1.2rem;'>{kh_aktuell:.0f} g</div>
+            <div class='metric-label'>Kohlenhydrate</div>
+            <div class='metric-sub'>Richtwert</div>
+          </div>
+          <div class='metric-card'>
+            <div class='metric-value' style='font-size:1.2rem;'>{config.FETT_RICHTWERT_G} g</div>
+            <div class='metric-label'>Fett</div>
+            <div class='metric-sub'>Richtwert</div>
+          </div>
+        </div>
+        """, unsafe_allow_html=True)
 
