@@ -38,7 +38,7 @@ st.markdown("""
     font-family: 'DM Sans', sans-serif !important;
   }
   .block-container {
-    padding: 2rem 2.5rem 3rem 2.5rem !important;
+    padding: 0.5rem 2.5rem 3rem 2.5rem !important;
     max-width: 1080px !important;
   }
 
@@ -133,8 +133,9 @@ st.markdown("""
     color: #BBBBBB;
     text-transform: uppercase;
     letter-spacing: 0.22em;
-    margin-bottom: 0.9rem;
-    padding-bottom: 0.8rem;
+    margin-top: 0.8rem;
+    margin-bottom: 0.3rem;
+    padding-bottom: 0.5rem;
     border-bottom: 1px solid #F0F0F0;
     display: flex;
     align-items: center;
@@ -1058,8 +1059,9 @@ with tab_progress:
 
         letzte_7  = [r["gewicht_kg"] for r in gew_verlauf[-7:] if r.get("gewicht_kg")] if gew_verlauf else []
         avg_gew   = sum(letzte_7) / len(letzte_7) if letzte_7 else None
-        delta     = (avg_gew - config.STARTGEWICHT_KG) if avg_gew else None
-        delta_str = f"{'–' if delta < 0 else '+'}{abs(delta):.1f} kg" if delta is not None else "–"
+        avg_gew_str = f"{avg_gew:.1f}" if avg_gew is not None else "–"
+        delta     = (avg_gew - config.STARTGEWICHT_KG) if avg_gew is not None else None
+        delta_str = (f"–{abs(delta):.1f} kg" if delta < 0 else f"+{abs(delta):.1f} kg") if delta is not None else "–"
         delta_col = config.SUCCESS_COLOR if (delta or 0) < 0 else config.ERROR_COLOR
 
         avg_kcal_tage   = [l for l in alle_logs if l.get("kcal_gesamt")]
@@ -1081,7 +1083,7 @@ with tab_progress:
             <div class='metric-sub'>von 90 gesamt</div>
           </div>
           <div class='metric-card'>
-            <div class='metric-value' style='font-size:1.5rem;'>{avg_gew:.1f if avg_gew else "–"}<span style='font-size:0.75rem;color:#64748B;'> kg</span></div>
+            <div class='metric-value' style='font-size:1.5rem;'>{avg_gew_str}<span style='font-size:0.75rem;color:#64748B;'> kg</span></div>
             <div class='metric-label'>Ø Gewicht (7d)</div>
             <div class='metric-sub'>Start: {config.STARTGEWICHT_KG} kg</div>
           </div>
