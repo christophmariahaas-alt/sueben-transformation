@@ -476,8 +476,7 @@ def lade_log_fuer_datum(ziel_datum: date):
         st.session_state.slots = vorhandener_log["mahlzeiten"]
     else:
         st.session_state.slots = [
-            {"name": f"Mahlzeit {i+1}", "kcal": 0.0, "protein": 0.0}
-            for i in range(config.STANDARD_SLOTS)
+            {"name": "Mahlzeit 1", "kcal": 0.0, "protein": 0.0}
         ]
 
     if vorhandener_log:
@@ -854,14 +853,28 @@ with tab_checkin:
     # ── Supplements ──────────────────────────────────────────────────────────
     st.write("")
     st.markdown("**💊 Supplements**")
-    sup_col1, sup_col2, sup_col3 = st.columns(3)
+    sup_col1, sup_col2 = st.columns(2)
     with sup_col1:
-        s_creatin = st.number_input("Creatin (g)", min_value=0.0, max_value=20.0, step=0.5, value=float(st.session_state.creatin), key="input_creatin")
+        s_creatin = st.number_input(
+            "Creatin Monohydrat (g)",
+            min_value=0.0, max_value=20.0, step=0.5,
+            value=float(st.session_state.creatin),
+            key="input_creatin",
+            format="%.1f",
+        )
     with sup_col2:
-        s_omega3  = st.number_input("Omega 3 (g)", min_value=0.0, max_value=20.0, step=0.5, value=float(st.session_state.omega3),  key="input_omega3")
-    with sup_col3:
-        st.markdown("<div style='height:1.9rem'></div>", unsafe_allow_html=True)
-        s_vitamine = st.checkbox("Vitamine & Zink (D3/K2, Multi, Zink)", value=st.session_state.vitamine, key="cb_vitamine")
+        s_omega3 = st.number_input(
+            "Omega 3 (g)",
+            min_value=0.0, max_value=20.0, step=0.5,
+            value=float(st.session_state.omega3),
+            key="input_omega3",
+            format="%.1f",
+        )
+    s_vitamine = st.checkbox(
+        "Vitamine & Zink eingenommen  (D3 / K2 · Multivitamin · Zink)",
+        value=st.session_state.vitamine,
+        key="cb_vitamine",
+    )
 
     # ── SPEICHERN ────────────────────────────────────────────────────────────
     st.write("")
