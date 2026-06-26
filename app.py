@@ -29,6 +29,7 @@ db.init_db()
 st.markdown("""
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,300&display=swap');
+  @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css');
 
   /* ── Basis: Weiß auf Schwarz ─────────────────────────────────────────── */
   html, body, .stApp {
@@ -345,21 +346,25 @@ st.markdown("""
     background-color: #EEECE9 !important;
     border: none !important;
     border-radius: 12px !important;
-    padding: 0.3rem !important;
+    padding: 0.35rem !important;
     gap: 0.2rem !important;
   }
   .stTabs [data-baseweb="tab"] {
     border-radius: 9px !important;
-    color: #AAAAAA !important;
-    font-weight: 600 !important;
-    font-size: 0.82rem !important;
-    letter-spacing: 0.03em !important;
-    font-family: 'DM Sans', sans-serif !important;
+    color: #BBBBBB !important;
+    font-weight: 400 !important;
+    font-size: 1.15rem !important;
+    letter-spacing: 0.1em !important;
+    font-family: 'Bebas Neue', sans-serif !important;
+    padding: 0.5rem 1.4rem !important;
+    transition: all 0.2s ease !important;
   }
   .stTabs [aria-selected="true"] {
     background-color: #0A0A0A !important;
-    color: #B8FF00 !important;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.12) !important;
+    color: #FFFFFF !important;
+    font-weight: 400 !important;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.15) !important;
+    letter-spacing: 0.1em !important;
   }
 
   /* ── Expander ────────────────────────────────────────────────────────── */
@@ -434,7 +439,7 @@ if startdatum is None:
 
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        if st.button("🚀  Challenge jetzt starten!", type="primary", use_container_width=True):
+        if st.button("Challenge jetzt starten", type="primary", use_container_width=True):
             db.set_startdatum(heute)
             st.success(f"✅ Challenge gestartet! Tag 1 von 90 – los geht's!")
             st.rerun()
@@ -589,8 +594,8 @@ st.markdown(f"""
 # ══════════════════════════════════════════════════════════════════════════════
 
 tab_checkin, tab_progress = st.tabs([
-    "📋  Daily Check-In",
-    "📊  Progress Hub",
+    "Daily Check-In",
+    "Progress Hub",
 ])
 
 # ╔══════════════════════════════════════════════════════════════════════════╗
@@ -656,7 +661,7 @@ with tab_checkin:
             st.rerun()
 
     # ── A. MORGENS ───────────────────────────────────────────────────────────
-    st.markdown("<div class='section-header'>A — Morgens · Schnelle Kennzahlen</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-header'>Morgens &nbsp;·&nbsp; Schnelle Kennzahlen</div>", unsafe_allow_html=True)
 
     col_g, col_s = st.columns(2)
     with col_g:
@@ -676,7 +681,7 @@ with tab_checkin:
         )
 
     # ── B. ERNÄHRUNG ─────────────────────────────────────────────────────────
-    st.markdown("<div class='section-header'>B — Ernährung · Makro-Tracking</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-header'>Ernährung &nbsp;·&nbsp; Makro-Tracking</div>", unsafe_allow_html=True)
 
     # Live-Makro-Übersicht
     kcal_summe, protein_summe = berechne_slot_summen()
@@ -713,7 +718,7 @@ with tab_checkin:
 
     # ── Mahlzeiten-Slots ─────────────────────────────────────────────────────
     for i, slot in enumerate(st.session_state.slots):
-        st.markdown(f"<div class='meal-slot-header'>🍽 Mahlzeit {i+1}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='meal-slot-header'>Mahlzeit {i+1}</div>", unsafe_allow_html=True)
 
         sc1, sc2, sc3 = st.columns([3, 2, 2])
         with sc1:
@@ -726,7 +731,7 @@ with tab_checkin:
             st.session_state.slots[i]["name"] = name
 
         with sc2:
-            st.markdown("<span class='meal-field-label'>🔥 Kalorien (kcal)</span>", unsafe_allow_html=True)
+            st.markdown("<span class='meal-field-label'>Kalorien (kcal)</span>", unsafe_allow_html=True)
             kcal_val = st.number_input(
                 "kcal",
                 min_value=0.0, max_value=5000.0, step=5.0,
@@ -737,7 +742,7 @@ with tab_checkin:
             st.session_state.slots[i]["kcal"] = kcal_val
 
         with sc3:
-            st.markdown("<span class='meal-field-label'>💪 Protein (g)</span>", unsafe_allow_html=True)
+            st.markdown("<span class='meal-field-label'>Protein (g)</span>", unsafe_allow_html=True)
             protein_val = st.number_input(
                 "Protein (g)",
                 min_value=0.0, max_value=500.0, step=1.0,
@@ -757,23 +762,23 @@ with tab_checkin:
 
         st.write("")
 
-    if st.button("➕ Weiteren Slot hinzufügen"):
+    if st.button("+ Weiteren Slot hinzufügen"):
         n = len(st.session_state.slots) + 1
         st.session_state.slots.append({"name": f"Mahlzeit {n}", "kcal": 0.0, "protein": 0.0})
         st.rerun()
 
     # ── C. ABENDS: HABITS ────────────────────────────────────────────────────
-    st.markdown("<div class='section-header'>C — Abends · Habits & Supplements</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-header'>Abends &nbsp;·&nbsp; Habits & Supplements</div>", unsafe_allow_html=True)
 
     st.markdown("**✅ Tägliche Gewohnheiten**")
     hab_col1, hab_col2 = st.columns(2)
     with hab_col1:
-        h_schritte = st.checkbox(f"🚶 {config.HABIT_SCHRITTE_ZIEL:,} Schritte".replace(",", "."), value=st.session_state.schritte, key="cb_schritte")
-        h_wasser   = st.checkbox(f"💧 {config.WASSER_ZIEL_LITER} Liter Wasser",                   value=st.session_state.wasser,    key="cb_wasser")
-        h_training = st.checkbox("🏋️ Krafttraining absolviert",                                    value=st.session_state.training,  key="cb_training")
+        h_schritte = st.checkbox(f"{config.HABIT_SCHRITTE_ZIEL:,} Schritte".replace(",", "."), value=st.session_state.schritte, key="cb_schritte")
+        h_wasser   = st.checkbox(f"{config.WASSER_ZIEL_LITER} Liter Wasser",                   value=st.session_state.wasser,    key="cb_wasser")
+        h_training = st.checkbox("Krafttraining absolviert",                                    value=st.session_state.training,  key="cb_training")
     with hab_col2:
-        h_neat  = st.checkbox("🪜 NEAT-Fokus (Treppen, Stehschreibtisch)", value=st.session_state.neat,  key="cb_neat")
-        h_clean = st.checkbox("🥗 Clean Eating eingehalten (80/20)",        value=st.session_state.clean, key="cb_clean")
+        h_neat  = st.checkbox("NEAT-Fokus (Treppen, Stehschreibtisch)", value=st.session_state.neat,  key="cb_neat")
+        h_clean = st.checkbox("Clean Eating eingehalten (80/20)",        value=st.session_state.clean, key="cb_clean")
 
     habits_erreicht = sum([h_schritte, h_wasser, h_training, h_neat, h_clean])
     hab_farbe = config.SUCCESS_COLOR if habits_erreicht >= 4 else (config.WARNING_COLOR if habits_erreicht >= 3 else config.ERROR_COLOR)
@@ -793,7 +798,7 @@ with tab_checkin:
         s_omega3  = st.number_input("Omega 3 (g)", min_value=0.0, max_value=20.0, step=0.5, value=float(st.session_state.omega3),  key="input_omega3")
     with sup_col3:
         st.markdown("<div style='height:1.9rem'></div>", unsafe_allow_html=True)
-        s_vitamine = st.checkbox("🧡 Vitamine & Zink (D3/K2, Multi, Zink)", value=st.session_state.vitamine, key="cb_vitamine")
+        s_vitamine = st.checkbox("Vitamine & Zink (D3/K2, Multi, Zink)", value=st.session_state.vitamine, key="cb_vitamine")
 
     # ── SPEICHERN ────────────────────────────────────────────────────────────
     st.write("")
@@ -806,7 +811,7 @@ with tab_checkin:
             unsafe_allow_html=True,
         )
 
-    btn_label = "💾  Tag speichern" if ziel_datum == heute else f"💾  Nachtrag {ziel_datum.strftime('%d.%m.')} speichern"
+    btn_label = "Tag speichern" if ziel_datum == heute else f"Nachtrag {ziel_datum.strftime('%d.%m.')} speichern"
     if st.button(btn_label, type="primary", use_container_width=True, key="save_btn"):
         mahlzeiten = [
             {
