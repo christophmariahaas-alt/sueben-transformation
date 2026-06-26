@@ -298,13 +298,14 @@ st.markdown("""
   /* ── Buttons ─────────────────────────────────────────────────────────── */
   .stButton > button {
     border-radius: 10px !important;
-    font-weight: 600 !important;
-    letter-spacing: 0.04em !important;
-    font-size: 0.88rem !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.12em !important;
+    font-size: 1.1rem !important;
     padding: 0.7rem 1.6rem !important;
     min-height: 2.8rem !important;
     transition: all 0.2s ease !important;
-    font-family: 'DM Sans', sans-serif !important;
+    font-family: 'Bebas Neue', sans-serif !important;
+    text-transform: uppercase !important;
     width: 100% !important;
   }
   .stButton > button[kind="primary"] {
@@ -359,8 +360,9 @@ st.markdown("""
     color: #BBBBBB !important;
     font-weight: 400 !important;
     font-size: 1.15rem !important;
-    letter-spacing: 0.1em !important;
+    letter-spacing: 0.12em !important;
     font-family: 'Bebas Neue', sans-serif !important;
+    text-transform: uppercase !important;
     padding: 0.5rem 1.4rem !important;
     transition: all 0.2s ease !important;
   }
@@ -369,7 +371,8 @@ st.markdown("""
     color: #FFFFFF !important;
     font-weight: 400 !important;
     box-shadow: 0 2px 16px rgba(0,0,0,0.15) !important;
-    letter-spacing: 0.1em !important;
+    letter-spacing: 0.12em !important;
+    text-transform: uppercase !important;
   }
 
   /* ── Expander ────────────────────────────────────────────────────────── */
