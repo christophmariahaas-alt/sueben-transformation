@@ -28,7 +28,7 @@ db.init_db()
 
 st.markdown("""
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,300;1,9..40,400&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,300&display=swap');
 
   /* ── Basis: Weiß auf Schwarz ─────────────────────────────────────────── */
   html, body, .stApp {
@@ -47,23 +47,28 @@ st.markdown("""
     border-radius: 20px;
     padding: 2.2rem 2.8rem;
     margin-bottom: 2rem;
-    box-shadow: 0 4px 40px rgba(0,0,0,0.12);
+    box-shadow: 0 4px 60px rgba(0,0,0,0.15), 0 0 0 1px rgba(184,255,0,0.08);
   }
   .app-title {
-    font-size: 1.85rem;
-    font-weight: 700;
-    letter-spacing: -0.04em;
+    font-size: 3.6rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
     margin: 0;
     color: #FFFFFF;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Bebas Neue', sans-serif;
+    line-height: 0.9;
+  }
+  .app-title span {
+    color: #B8FF00;
   }
   .app-subtitle {
-    font-size: 0.68rem;
-    color: #444;
-    margin: 0.5rem 0 0 0;
-    letter-spacing: 0.22em;
+    font-size: 0.65rem;
+    color: #3A3A3A;
+    margin: 0.7rem 0 0 0;
+    letter-spacing: 0.25em;
     text-transform: uppercase;
     font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
   }
 
   /* ── Metric Cards ────────────────────────────────────────────────────── */
@@ -71,10 +76,15 @@ st.markdown("""
     background: #FFFFFF;
     border: none;
     border-radius: 16px;
-    padding: 1.4rem 1.2rem;
+    padding: 1.5rem 1rem;
     text-align: center;
     box-shadow: 0 2px 16px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04);
     transition: box-shadow 0.2s ease;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
   .metric-card:hover {
     box-shadow: 0 8px 32px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.06);
@@ -88,16 +98,16 @@ st.markdown("""
     font-family: 'DM Sans', sans-serif;
   }
   .metric-label {
-    font-size: 0.62rem;
-    color: #999;
+    font-size: 0.6rem;
+    color: #AAAAAA;
     text-transform: uppercase;
     letter-spacing: 0.2em;
-    margin-top: 0.6rem;
+    margin-top: 0.65rem;
     font-weight: 600;
   }
   .metric-sub {
-    font-size: 0.78rem;
-    color: #BBB;
+    font-size: 0.75rem;
+    color: #CCCCCC;
     margin-top: 0.3rem;
   }
 
@@ -117,22 +127,34 @@ st.markdown("""
 
   /* ── Mahlzeiten ──────────────────────────────────────────────────────── */
   .meal-slot-header {
-    font-size: 0.62rem;
+    font-size: 0.6rem;
     font-weight: 700;
     color: #BBBBBB;
     text-transform: uppercase;
     letter-spacing: 0.22em;
-    margin-bottom: 0.7rem;
-    padding-bottom: 0.7rem;
+    margin-bottom: 0.9rem;
+    padding-bottom: 0.8rem;
     border-bottom: 1px solid #F0F0F0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .meal-slot-header::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #E0E0E0;
+    flex-shrink: 0;
   }
   .meal-field-label {
-    font-size: 0.68rem;
+    font-size: 0.65rem;
     font-weight: 600;
-    color: #AAAAAA;
-    margin-bottom: 0.3rem;
+    color: #BBBBBB;
+    margin-bottom: 0.25rem;
     display: block;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
   }
 
@@ -198,12 +220,25 @@ st.markdown("""
   .section-header {
     font-size: 0.6rem;
     font-weight: 700;
-    color: #C0C0C0;
+    color: #AAAAAA;
     text-transform: uppercase;
     letter-spacing: 0.25em;
     margin: 2.2rem 0 1.2rem 0;
     padding-bottom: 0.7rem;
     border-bottom: 1px solid #EBEBEB;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .section-header::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #B8FF00;
+    flex-shrink: 0;
+    box-shadow: 0 0 8px #B8FF0088;
   }
 
   /* ── Start Screen ────────────────────────────────────────────────────── */
@@ -265,25 +300,27 @@ st.markdown("""
     font-weight: 600 !important;
     letter-spacing: 0.04em !important;
     font-size: 0.88rem !important;
+    padding: 0.7rem 1.6rem !important;
+    min-height: 2.8rem !important;
     transition: all 0.2s ease !important;
     font-family: 'DM Sans', sans-serif !important;
+    width: 100% !important;
   }
   .stButton > button[kind="primary"] {
     background: #0A0A0A !important;
     border: none !important;
-    color: #FFFFFF !important;
-    padding: 0.65rem 1.5rem !important;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.15) !important;
+    color: #B8FF00 !important;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.18) !important;
   }
   .stButton > button[kind="primary"]:hover {
-    background: #2A2A2A !important;
+    background: #1A1A1A !important;
     transform: translateY(-1px) !important;
-    box-shadow: 0 6px 24px rgba(0,0,0,0.18) !important;
+    box-shadow: 0 6px 28px rgba(0,0,0,0.22) !important;
   }
   .stButton > button[kind="secondary"] {
     background: #FFFFFF !important;
     border: 1px solid #E0E0E0 !important;
-    color: #666 !important;
+    color: #888 !important;
     box-shadow: 0 1px 4px rgba(0,0,0,0.04) !important;
   }
   .stButton > button[kind="secondary"]:hover {
@@ -299,8 +336,8 @@ st.markdown("""
     font-family: 'DM Sans', sans-serif !important;
   }
   div[data-testid="stCheckbox"] input:checked + div {
-    background-color: #0A0A0A !important;
-    border-color: #0A0A0A !important;
+    background-color: #B8FF00 !important;
+    border-color: #B8FF00 !important;
   }
 
   /* ── Tabs ────────────────────────────────────────────────────────────── */
@@ -320,9 +357,9 @@ st.markdown("""
     font-family: 'DM Sans', sans-serif !important;
   }
   .stTabs [aria-selected="true"] {
-    background-color: #FFFFFF !important;
-    color: #0A0A0A !important;
-    box-shadow: 0 1px 6px rgba(0,0,0,0.08) !important;
+    background-color: #0A0A0A !important;
+    color: #B8FF00 !important;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.12) !important;
   }
 
   /* ── Expander ────────────────────────────────────────────────────────── */
@@ -480,8 +517,8 @@ def fortschrittsbalken(wert: float, ziel: float, farbe: str, einheit: str = "") 
 
 def makro_karte(label: str, wert: float, ziel: float, einheit: str, farbe: str) -> str:
     pct = min((wert / ziel) * 100, 100) if ziel > 0 else 0
-    dot   = "#0A0A0A" if pct >= 100 else ("#AAAAAA" if pct >= 80 else "#E0E0E0")
-    balken = "linear-gradient(90deg,#E8E8E8,#0A0A0A)" if pct >= 100 else "linear-gradient(90deg,#F0F0F0,#CCCCCC)"
+    dot   = "#B8FF00" if pct >= 100 else ("#AAAAAA" if pct >= 80 else "#E0E0E0")
+    balken = "linear-gradient(90deg,#3A4A00,#B8FF00)" if pct >= 100 else "linear-gradient(90deg,#F0F0F0,#CCCCCC)"
     return f"""
     <div class='metric-card'>
       <div style='display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-bottom:0.1rem;'>
@@ -518,7 +555,7 @@ st.markdown(f"""
 <div class='app-header'>
   <div style='display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1.5rem;'>
     <div>
-      <div class='app-title'>PROJECT H90</div>
+      <div class='app-title'>PROJECT <span>H90</span></div>
       <div class='app-subtitle'>90 Days to Peak Performance &nbsp;&nbsp;·&nbsp;&nbsp; FC Suebia Edition</div>
     </div>
     <div style='display:flex;gap:2.5rem;align-items:center;'>
@@ -540,7 +577,7 @@ st.markdown(f"""
   </div>
   <div style='margin-top:1.8rem;'>
     <div style='background:#1E1E1E;border-radius:999px;height:2px;overflow:hidden;'>
-      <div style='width:{(tag_nr/90)*100:.1f}%;height:100%;background:linear-gradient(90deg,#333,#FFFFFF);border-radius:999px;'></div>
+      <div style='width:{(tag_nr/90)*100:.1f}%;height:100%;background:linear-gradient(90deg,#3A4A00,#B8FF00);border-radius:999px;box-shadow:0 0 8px #B8FF0066;'></div>
     </div>
     <div style='font-size:0.6rem;color:#333;margin-top:0.5rem;text-align:right;letter-spacing:0.15em;font-weight:600;'>{90-tag_nr} TAGE VERBLEIBEND</div>
   </div>
@@ -655,13 +692,20 @@ with tab_checkin:
     with m2:
         st.markdown(makro_karte("Protein gesamt", protein_summe, config.PROTEIN_ZIEL_G, " g", prot_farbe), unsafe_allow_html=True)
     with m3:
+        rest_dot = "#B8FF00" if rest_kcal > 200 else "#AAAAAA"
         st.markdown(f"""
         <div class='metric-card'>
-          <div class='metric-value' style='color:{rest_farbe};font-size:1.5rem;'>
-            {rest_kcal:.0f}<span style='font-size:0.8rem;color:#64748B;'> kcal</span>
+          <div style='display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-bottom:0.1rem;'>
+            <div style='width:5px;height:5px;border-radius:50%;background:{rest_dot};flex-shrink:0;'></div>
+            <div class='metric-value'>
+              {rest_kcal:.0f}<span style='font-size:0.72rem;color:#CCC;font-weight:400;margin-left:3px;'>kcal</span>
+            </div>
           </div>
           <div class='metric-label'>Noch verfügbar</div>
-          <div class='metric-sub'>von {kcal_ziel:.0f} kcal Tagesbudget</div>
+          <div class='progress-bar-wrap'>
+            <div class='progress-bar-fill' style='width:{min((rest_kcal/kcal_ziel)*100,100):.1f}%;background:linear-gradient(90deg,#F0F0F0,#CCCCCC);'></div>
+          </div>
+          <div class='metric-sub'>von {kcal_ziel:.0f} kcal</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -825,11 +869,12 @@ with tab_progress:
 
         streak_col, days_col, avg_col, best_col = st.columns(4)
         with streak_col:
-            st.markdown(
-                f"<div class='streak-display'>{streak}</div>"
-                f"<div class='streak-label'>Streak</div>",
-                unsafe_allow_html=True,
-            )
+            st.markdown(f"""
+            <div class='metric-card'>
+              <div class='streak-display'>{streak}</div>
+              <div class='streak-label'>Streak</div>
+            </div>
+            """, unsafe_allow_html=True)
         with days_col:
             st.markdown(f"""
             <div class='metric-card'>
