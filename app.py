@@ -344,13 +344,21 @@ st.markdown("""
   /* ── Checkboxen ──────────────────────────────────────────────────────── */
   div[data-testid="stCheckbox"] label {
     color: #555 !important;
-    font-size: 0.92rem !important;
+    font-size: 0.85rem !important;
     font-weight: 400 !important;
     font-family: 'DM Sans', sans-serif !important;
   }
   div[data-testid="stCheckbox"] input:checked + div {
     background-color: #B8FF00 !important;
     border-color: #B8FF00 !important;
+  }
+  /* Vitamine-Checkbox im gleichen Stil wie number_input */
+  div[data-testid="stCheckbox"]:has(input[aria-label="D3/K2 · Multi · Zink"]) {
+    background: #FFFFFF !important;
+    border: 1px solid #E8E8E8 !important;
+    border-radius: 10px !important;
+    padding: 0.55rem 0.75rem !important;
+    margin-top: 1.55rem !important;
   }
 
   /* ── Tabs ────────────────────────────────────────────────────────────── */
@@ -785,6 +793,33 @@ with tab_checkin:
             key="input_schlaf",
         )
 
+    # ── Supplements ──────────────────────────────────────────────────────────
+    st.markdown("<div style='font-size:0.6rem;font-weight:700;color:#AAAAAA;text-transform:uppercase;letter-spacing:0.22em;margin:1rem 0 0.5rem 0;'>💊 Supplements</div>", unsafe_allow_html=True)
+    sup_col1, sup_col2, sup_col3 = st.columns(3)
+    with sup_col1:
+        s_creatin = st.number_input(
+            "Creatin (g)",
+            min_value=0.0, max_value=20.0, step=0.5,
+            value=float(st.session_state.creatin),
+            key="input_creatin",
+            format="%.1f",
+        )
+    with sup_col2:
+        s_omega3 = st.number_input(
+            "Omega 3 (g)",
+            min_value=0.0, max_value=20.0, step=0.5,
+            value=float(st.session_state.omega3),
+            key="input_omega3",
+            format="%.1f",
+        )
+    with sup_col3:
+        st.markdown("<div style='font-size:0.75rem;color:#555;margin-bottom:0.3rem;'>Vitamine & Zink</div>", unsafe_allow_html=True)
+        s_vitamine = st.checkbox(
+            "D3/K2 · Multi · Zink",
+            value=st.session_state.vitamine,
+            key="cb_vitamine",
+        )
+
     # ── B. ERNÄHRUNG ─────────────────────────────────────────────────────────
     st.markdown("<div class='section-header'>Ernährung &nbsp;·&nbsp; Makro-Tracking</div>", unsafe_allow_html=True)
     st.markdown(
@@ -881,7 +916,7 @@ with tab_checkin:
         st.rerun()
 
     # ── C. ABENDS: HABITS ────────────────────────────────────────────────────
-    st.markdown("<div class='section-header'>Abends &nbsp;·&nbsp; Habits & Supplements</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-header'>Abends &nbsp;·&nbsp; Habits</div>", unsafe_allow_html=True)
 
     st.markdown("**✅ Tägliche Gewohnheiten**")
     hab_col1, hab_col2 = st.columns(2)
@@ -899,32 +934,6 @@ with tab_checkin:
         f"<div style='font-size:0.8rem;color:#64748B;margin-top:0.3rem;'>Habits: {habits_erreicht}/5</div>"
         + fortschrittsbalken(habits_erreicht, 5, hab_farbe),
         unsafe_allow_html=True
-    )
-
-    # ── Supplements ──────────────────────────────────────────────────────────
-    st.write("")
-    st.markdown("**💊 Supplements**")
-    sup_col1, sup_col2 = st.columns(2)
-    with sup_col1:
-        s_creatin = st.number_input(
-            "Creatin Monohydrat (g)",
-            min_value=0.0, max_value=20.0, step=0.5,
-            value=float(st.session_state.creatin),
-            key="input_creatin",
-            format="%.1f",
-        )
-    with sup_col2:
-        s_omega3 = st.number_input(
-            "Omega 3 (g)",
-            min_value=0.0, max_value=20.0, step=0.5,
-            value=float(st.session_state.omega3),
-            key="input_omega3",
-            format="%.1f",
-        )
-    s_vitamine = st.checkbox(
-        "Vitamine & Zink eingenommen  (D3 / K2 · Multivitamin · Zink)",
-        value=st.session_state.vitamine,
-        key="cb_vitamine",
     )
 
     # ── ZUSAMMENFASSUNG ──────────────────────────────────────────────────────
@@ -1151,27 +1160,20 @@ with tab_progress:
             )
             st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
 
-        # ── Habits & Supplements ──────────────────────────────────────────────
-        st.markdown("<div class='section-header'>Habits &amp; Supplements</div>", unsafe_allow_html=True)
+        # ── Habits ────────────────────────────────────────────────────────────
+        st.markdown("<div class='section-header'>Habits</div>", unsafe_allow_html=True)
 
-        habit_labels = ["Schritte", "Wasser", "Training", "NEAT", "Clean Eating", "Creatin", "Omega 3", "Vitamine"]
+        habit_labels = ["Schritte", "Wasser", "Training", "NEAT", "Clean Eating"]
         habit_keys_fn = [
             lambda l: l.get("habit_schritte"),
             lambda l: l.get("habit_wasser"),
             lambda l: l.get("habit_training"),
             lambda l: l.get("habit_neat"),
             lambda l: l.get("habit_clean"),
-            lambda l: (l.get("supp_creatin_g") or 0) > 0,
-            lambda l: (l.get("supp_omega3_g")  or 0) > 0,
-            lambda l: l.get("supp_vitamine"),
         ]
-        counts   = [sum(1 for l in alle_logs if fn(l)) for fn in habit_keys_fn]
-        pcts     = [round(c / total_days * 100) for c in counts]
-        colors   = ["#B8FF00" if p >= 80 else "#EAB308" if p >= 50 else "#EF4444" for p in pcts]
-        # Supplements etwas abdunkeln zur Unterscheidung
-        colors[5] = "#8FCC00" if pcts[5] >= 80 else "#C8941A" if pcts[5] >= 50 else "#C03030"
-        colors[6] = colors[5]
-        colors[7] = colors[5]
+        counts = [sum(1 for l in alle_logs if fn(l)) for fn in habit_keys_fn]
+        pcts   = [round(c / total_days * 100) for c in counts]
+        colors = ["#B8FF00" if p >= 80 else "#EAB308" if p >= 50 else "#EF4444" for p in pcts]
 
         fig_hs = go.Figure(go.Bar(
             x=habit_labels,
@@ -1180,7 +1182,7 @@ with tab_progress:
             text=[f"{c}×" for c in counts],
             textposition="outside",
             textfont=dict(color="#444444", size=10),
-            hovertemplate="%{x}<br>%{y}% · %{text}<extra></extra>",
+            hovertemplate="%{x}: %{y}% (%{text})<extra></extra>",
         ))
         fig_hs.add_hline(y=80, line=dict(color="#CCCCCC", width=1, dash="dot"),
                          annotation_text="80%", annotation_font=dict(color="#BBBBBB", size=9))
@@ -1194,6 +1196,44 @@ with tab_progress:
             showlegend=False,
         )
         st.plotly_chart(fig_hs, use_container_width=True, config={"displayModeBar": False})
+
+        # ── Supplements ───────────────────────────────────────────────────────
+        st.markdown("<div class='section-header'>Supplements</div>", unsafe_allow_html=True)
+
+        def supp_streak(logs, fn):
+            """Aufeinanderfolgende Tage zuletzt eingenommen (rückwärts vom letzten Log)."""
+            s = 0
+            for l in reversed(logs):
+                if fn(l):
+                    s += 1
+                else:
+                    break
+            return s
+
+        supp_defs = [
+            ("Creatin",  lambda l: (l.get("supp_creatin_g") or 0) > 0),
+            ("Omega 3",  lambda l: (l.get("supp_omega3_g")  or 0) > 0),
+            ("Vitamine", lambda l: bool(l.get("supp_vitamine"))),
+        ]
+        supp_html = "<div style='display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.6rem;'>"
+        for name, fn in supp_defs:
+            c      = sum(1 for l in alle_logs if fn(l))
+            streak_s = supp_streak(alle_logs, fn)
+            pct    = round(c / total_days * 100)
+            dot    = "#B8FF00" if pct >= 80 else "#EAB308" if pct >= 50 else "#AAAAAA"
+            supp_html += f"""
+            <div class='metric-card' style='text-align:center;'>
+              <div style='font-size:1.6rem;font-weight:700;color:#111;line-height:1;'>{c}</div>
+              <div style='font-size:0.58rem;color:#AAA;text-transform:uppercase;
+                          letter-spacing:0.15em;margin:0.2rem 0 0.5rem;'>von {total_days} Tagen</div>
+              <div style='background:#F0F0F0;border-radius:999px;height:3px;overflow:hidden;margin-bottom:0.5rem;'>
+                <div style='width:{pct}%;height:100%;background:{dot};border-radius:999px;'></div>
+              </div>
+              <div style='font-size:0.7rem;font-weight:600;color:#333;'>{name}</div>
+              <div style='font-size:0.62rem;color:#AAA;margin-top:0.2rem;'>🔥 {streak_s}d Streak</div>
+            </div>"""
+        supp_html += "</div>"
+        st.markdown(supp_html, unsafe_allow_html=True)
 
         # ── Letzte 14 Tage ────────────────────────────────────────────────────
         st.markdown("<div class='section-header'>Letzte 14 Tage</div>", unsafe_allow_html=True)
