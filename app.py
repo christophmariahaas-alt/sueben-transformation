@@ -565,34 +565,89 @@ tag_nr     = logic.berechne_tag_nummer(heute, startdatum)
 kcal_ziel  = db.get_kcal_ziel()
 
 st.markdown(f"""
+<style>
+  .header-stats {{
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    flex-shrink: 0;
+  }}
+  .header-divider {{
+    width: 1px;
+    height: 2.2rem;
+    background: #222;
+  }}
+  .header-stat-value {{
+    font-size: 2rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    font-family: 'DM Sans', sans-serif;
+    text-align: center;
+  }}
+  .header-stat-label {{
+    font-size: 0.55rem;
+    color: #444;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-top: 0.35rem;
+    font-weight: 600;
+    text-align: center;
+  }}
+  .header-date {{
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: #777;
+    line-height: 1;
+    font-family: 'DM Sans', sans-serif;
+    text-align: right;
+  }}
+  @media (max-width: 480px) {{
+    .header-stats {{
+      gap: 1.2rem;
+      width: 100%;
+      justify-content: space-between;
+    }}
+    .header-date {{
+      display: none;
+    }}
+    .header-divider-date {{
+      display: none;
+    }}
+    .header-stat-value {{
+      font-size: 1.7rem;
+    }}
+  }}
+</style>
 <div class='app-header'>
-  <div style='display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1.5rem;'>
+  <div style='display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;'>
     <div>
       <div class='app-title'>PROJECT <span>H90</span></div>
-      <div class='app-subtitle'>90 Days to Peak Performance &nbsp;&nbsp;·&nbsp;&nbsp; FC Suebia Edition</div>
+      <div class='app-subtitle'>90 Days to Peak Performance &nbsp;·&nbsp; FC Suebia Edition</div>
     </div>
-    <div style='display:flex;gap:2.5rem;align-items:center;'>
-      <div style='text-align:center;'>
-        <div style='font-size:2.2rem;font-weight:700;color:#FFFFFF;line-height:1;letter-spacing:-0.04em;font-family:DM Sans,sans-serif;'>{tag_nr}</div>
-        <div style='font-size:0.58rem;color:#444;text-transform:uppercase;letter-spacing:0.22em;margin-top:0.4rem;font-weight:600;'>von 90</div>
+    <div class='header-stats'>
+      <div>
+        <div class='header-stat-value'>{tag_nr}</div>
+        <div class='header-stat-label'>von 90</div>
       </div>
-      <div style='width:1px;height:2.5rem;background:#222;'></div>
-      <div style='text-align:center;'>
-        <div style='font-size:2.2rem;font-weight:700;color:#FFFFFF;line-height:1;letter-spacing:-0.04em;font-family:DM Sans,sans-serif;'>{streak}</div>
-        <div style='font-size:0.58rem;color:#444;text-transform:uppercase;letter-spacing:0.22em;margin-top:0.4rem;font-weight:600;'>Streak</div>
+      <div class='header-divider'></div>
+      <div>
+        <div class='header-stat-value'>{streak}</div>
+        <div class='header-stat-label'>Streak</div>
       </div>
-      <div style='width:1px;height:2.5rem;background:#222;'></div>
-      <div style='text-align:right;'>
-        <div style='font-size:0.95rem;font-weight:500;color:#777;line-height:1;font-family:DM Sans,sans-serif;'>{heute.strftime("%d.%m.%Y")}</div>
-        <div style='font-size:0.58rem;color:#444;text-transform:uppercase;letter-spacing:0.18em;margin-top:0.4rem;font-weight:600;'>{heute.strftime("%A")}</div>
+      <div class='header-divider header-divider-date'></div>
+      <div class='header-date'>
+        <div>{heute.strftime("%d.%m.%Y")}</div>
+        <div style='font-size:0.55rem;color:#444;text-transform:uppercase;letter-spacing:0.18em;margin-top:0.35rem;font-weight:600;'>{heute.strftime("%A")}</div>
       </div>
     </div>
   </div>
-  <div style='margin-top:1.8rem;'>
+  <div style='margin-top:1.5rem;'>
     <div style='background:#1E1E1E;border-radius:999px;height:2px;overflow:hidden;'>
       <div style='width:{(tag_nr/90)*100:.1f}%;height:100%;background:linear-gradient(90deg,#3A4A00,#B8FF00);border-radius:999px;box-shadow:0 0 8px #B8FF0066;'></div>
     </div>
-    <div style='font-size:0.6rem;color:#333;margin-top:0.5rem;text-align:right;letter-spacing:0.15em;font-weight:600;'>{90-tag_nr} TAGE VERBLEIBEND</div>
+    <div style='font-size:0.58rem;color:#333;margin-top:0.5rem;text-align:right;letter-spacing:0.15em;font-weight:600;'>{90-tag_nr} TAGE VERBLEIBEND</div>
   </div>
 </div>
 """, unsafe_allow_html=True)
