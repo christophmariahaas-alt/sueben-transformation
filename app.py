@@ -818,3 +818,15 @@ with tab_progress:
                   <div class='metric-sub'>{sub}</div>
                 </div>
                 """, unsafe_allow_html=True)
+
+        # ── Einstellungen (versteckt, für Reset/Test) ─────────────────────────
+        st.write("")
+        with st.expander("⚙️ Einstellungen"):
+            st.markdown("**Challenge zurücksetzen**")
+            st.caption("Setzt das Startdatum zurück, sodass die Challenge neu gestartet werden kann. Deine bisherigen Log-Einträge bleiben erhalten.")
+            if st.button("🔄 Startdatum zurücksetzen", key="reset_btn"):
+                db.set_setting("startdatum", "")
+                for key in list(st.session_state.keys()):
+                    del st.session_state[key]
+                st.success("✅ Startdatum zurückgesetzt – du kannst die Challenge neu starten.")
+                st.rerun()

@@ -177,8 +177,11 @@ def senke_kcal_ziel(reduktion_kcal: float, reduktion_kh_g: float) -> None:
 def get_startdatum() -> Optional[date]:
     """Gibt das gespeicherte Startdatum zurück, oder None wenn noch nicht gestartet."""
     val = get_setting("startdatum")
-    if val:
-        return date.fromisoformat(val)
+    if val and len(val) == 10:
+        try:
+            return date.fromisoformat(val)
+        except ValueError:
+            return None
     return None
 
 
