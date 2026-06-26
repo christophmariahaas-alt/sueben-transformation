@@ -1,5 +1,5 @@
 """
-app.py – Hauptdatei: "Die Sueben Transformation"
+app.py – Hauptdatei: "PROJECT H90"
 Starten mit: streamlit run app.py
 """
 
@@ -18,8 +18,8 @@ import logic
 # ══════════════════════════════════════════════════════════════════════════════
 
 st.set_page_config(
-    page_title="Die Sueben Transformation",
-    page_icon="⚡",
+    page_title="PROJECT H90",
+    page_icon="◼",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
@@ -378,7 +378,7 @@ heute      = date.today()
 if startdatum is None:
     st.markdown(f"""
     <div class='app-header'>
-      <div class='app-title'>⚡ Die Sueben Transformation</div>
+      <div class='app-title'>⚡ PROJECT H90</div>
       <div class='app-subtitle'>90 Tage bis zur Bestform &nbsp;|&nbsp; FC Suebia Edition</div>
     </div>
     """, unsafe_allow_html=True)
@@ -518,8 +518,8 @@ st.markdown(f"""
 <div class='app-header'>
   <div style='display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1.5rem;'>
     <div>
-      <div class='app-title'>Die Sueben Transformation</div>
-      <div class='app-subtitle'>90 Tage bis zur Bestform &nbsp;&nbsp;·&nbsp;&nbsp; FC Suebia Edition</div>
+      <div class='app-title'>PROJECT H90</div>
+      <div class='app-subtitle'>90 Days to Peak Performance &nbsp;&nbsp;·&nbsp;&nbsp; FC Suebia Edition</div>
     </div>
     <div style='display:flex;gap:2.5rem;align-items:center;'>
       <div style='text-align:center;'>
