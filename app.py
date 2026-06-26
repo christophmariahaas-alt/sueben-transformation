@@ -359,6 +359,7 @@ st.markdown("""
     border-radius: 12px !important;
     padding: 0.35rem !important;
     gap: 0.2rem !important;
+    width: fit-content !important;
   }
   .stTabs [data-baseweb="tab"] {
     border-radius: 9px !important;
@@ -368,7 +369,9 @@ st.markdown("""
     letter-spacing: 0.12em !important;
     font-family: 'Bebas Neue', sans-serif !important;
     text-transform: uppercase !important;
-    padding: 0.5rem 1.4rem !important;
+    padding: 0.5rem 1.2rem !important;
+    white-space: nowrap !important;
+    flex: 0 0 auto !important;
     transition: all 0.2s ease !important;
   }
   .stTabs [aria-selected="true"] {
@@ -378,6 +381,13 @@ st.markdown("""
     box-shadow: 0 2px 16px rgba(0,0,0,0.15) !important;
     letter-spacing: 0.12em !important;
     text-transform: uppercase !important;
+  }
+  @media (max-width: 480px) {
+    .stTabs [data-baseweb="tab"] {
+      font-size: 0.95rem !important;
+      padding: 0.45rem 0.9rem !important;
+      letter-spacing: 0.08em !important;
+    }
   }
 
   /* ── Expander ────────────────────────────────────────────────────────── */
