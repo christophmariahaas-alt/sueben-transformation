@@ -26,233 +26,318 @@ st.set_page_config(
 
 db.init_db()
 
-st.markdown(f"""
+st.markdown("""
 <style>
-  .stApp {{
-    background-color: {config.BG_DARK};
-    color: #E2E8F0;
-  }}
-  .block-container {{
-    padding: 1.5rem 2rem 2rem 2rem;
-    max-width: 1100px;
-  }}
-  .app-header {{
-    background: linear-gradient(135deg, #1a0a00 0%, #2d1200 50%, #1a0a00 100%);
-    border: 1px solid {config.BRAND_COLOR}44;
-    border-radius: 12px;
-    padding: 1.5rem 2rem;
-    margin-bottom: 1.5rem;
-    position: relative;
-    overflow: hidden;
-  }}
-  .app-title {{
-    font-size: 2.2rem;
-    font-weight: 900;
-    color: {config.BRAND_COLOR};
-    letter-spacing: -0.02em;
-    margin: 0;
-    text-shadow: 0 0 30px {config.BRAND_COLOR}66;
-  }}
-  .app-subtitle {{
-    font-size: 0.95rem;
-    color: #94A3B8;
-    margin: 0.2rem 0 0 0;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-  }}
-  .metric-card {{
-    background: {config.CARD_BG};
-    border: 1px solid #2D3748;
-    border-radius: 10px;
-    padding: 1rem 1.2rem;
-    text-align: center;
-  }}
-  .metric-value {{
-    font-size: 2rem;
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  /* ── Basis ───────────────────────────────────────────────────────────── */
+  html, body, .stApp {
+    background-color: #080808 !important;
+    color: #E8E8E8 !important;
+    font-family: 'Inter', sans-serif !important;
+  }
+  .block-container {
+    padding: 2rem 2.5rem 3rem 2.5rem !important;
+    max-width: 1080px !important;
+  }
+
+  /* ── App Header ──────────────────────────────────────────────────────── */
+  .app-header {
+    background: #0E0E0E;
+    border: 1px solid #1E1E1E;
+    border-radius: 16px;
+    padding: 2rem 2.5rem;
+    margin-bottom: 2rem;
+  }
+  .app-title {
+    font-size: 1.9rem;
     font-weight: 800;
-    color: {config.BRAND_COLOR};
-    line-height: 1;
-  }}
-  .metric-label {{
-    font-size: 0.75rem;
-    color: #64748B;
+    letter-spacing: -0.03em;
+    margin: 0;
+    background: linear-gradient(135deg, #FFFFFF 0%, #A0A0A0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .app-subtitle {
+    font-size: 0.72rem;
+    color: #444;
+    margin: 0.4rem 0 0 0;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    font-weight: 500;
+  }
+
+  /* ── Metric Cards ────────────────────────────────────────────────────── */
+  .metric-card {
+    background: #0E0E0E;
+    border: 1px solid #1A1A1A;
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    text-align: center;
+  }
+  .metric-value {
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .metric-label {
+    font-size: 0.65rem;
+    color: #3A3A3A;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    margin-top: 0.5rem;
+    font-weight: 600;
+  }
+  .metric-sub {
+    font-size: 0.78rem;
+    color: #555;
     margin-top: 0.3rem;
-  }}
-  .metric-sub {{
-    font-size: 0.8rem;
-    color: #94A3B8;
-    margin-top: 0.15rem;
-  }}
-  .progress-bar-wrap {{
-    background: #2D3748;
+  }
+
+  /* ── Progress Bar ────────────────────────────────────────────────────── */
+  .progress-bar-wrap {
+    background: #1A1A1A;
     border-radius: 999px;
-    height: 10px;
+    height: 3px;
     overflow: hidden;
-    margin: 0.4rem 0;
-  }}
-  .progress-bar-fill {{
+    margin: 0.6rem 0 0.3rem 0;
+  }
+  .progress-bar-fill {
     height: 100%;
     border-radius: 999px;
-    transition: width 0.5s ease;
-  }}
+    transition: width 0.6s ease;
+  }
 
-  /* ── Mahlzeiten-Slot ──────────────────────────────────────────────────── */
-  .meal-slot {{
-    background: {config.CARD_BG};
-    border: 1px solid #2D3748;
-    border-radius: 10px;
-    padding: 1rem 1.2rem;
-    margin-bottom: 0.8rem;
-  }}
-  .meal-slot-header {{
-    font-size: 0.85rem;
+  /* ── Mahlzeiten ──────────────────────────────────────────────────────── */
+  .meal-slot-header {
+    font-size: 0.65rem;
     font-weight: 700;
-    color: {config.BRAND_COLOR};
+    color: #3A3A3A;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 0.8rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid #2D3748;
-  }}
-  .meal-field-label {{
-    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    margin-bottom: 0.6rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid #151515;
+  }
+  .meal-field-label {
+    font-size: 0.72rem;
     font-weight: 600;
-    color: #94A3B8;
+    color: #555;
     margin-bottom: 0.3rem;
     display: block;
-  }}
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
 
-  .warn-box {{
-    background: {config.WARNING_COLOR}18;
-    border-left: 3px solid {config.WARNING_COLOR};
-    border-radius: 0 6px 6px 0;
-    padding: 0.5rem 0.8rem;
-    font-size: 0.82rem;
-    color: {config.WARNING_COLOR};
-    margin-top: 0.4rem;
-  }}
-  .plateau-box {{
-    background: {config.ERROR_COLOR}15;
-    border: 1px solid {config.ERROR_COLOR}66;
-    border-radius: 8px;
-    padding: 1rem 1.2rem;
+  /* ── Info-Boxen ──────────────────────────────────────────────────────── */
+  .warn-box {
+    background: #161410;
+    border-left: 2px solid #6B5A00;
+    border-radius: 0 8px 8px 0;
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+    color: #8A7A30;
+    margin-top: 0.5rem;
+  }
+  .plateau-box {
+    background: #100E0E;
+    border: 1px solid #2A1A1A;
+    border-radius: 10px;
+    padding: 1rem 1.4rem;
     margin: 1rem 0;
-  }}
-  .foto-box {{
-    background: #7C3AED18;
-    border: 1px solid #7C3AED88;
-    border-radius: 8px;
+    color: #888;
+    font-size: 0.9rem;
+  }
+  .foto-box {
+    background: #0E0E12;
+    border: 1px solid #1E1E2A;
+    border-radius: 10px;
     padding: 0.8rem 1.2rem;
     margin: 0.8rem 0;
-  }}
-  .success-box {{
-    background: {config.SUCCESS_COLOR}15;
-    border: 1px solid {config.SUCCESS_COLOR}66;
-    border-radius: 8px;
+    color: #666;
+    font-size: 0.88rem;
+  }
+  .success-box {
+    background: #0A100A;
+    border: 1px solid #1A2A1A;
+    border-radius: 10px;
     padding: 0.8rem 1.2rem;
     margin: 0.8rem 0;
-  }}
-  .streak-display {{
-    font-size: 4rem;
-    font-weight: 900;
-    color: {config.BRAND_COLOR};
+    color: #4A6A4A;
+    font-size: 0.88rem;
+  }
+
+  /* ── Streak ──────────────────────────────────────────────────────────── */
+  .streak-display {
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: #FFFFFF;
     text-align: center;
     line-height: 1;
-    text-shadow: 0 0 40px {config.BRAND_COLOR}88;
-  }}
-  .streak-label {{
+    letter-spacing: -0.03em;
+  }
+  .streak-label {
     text-align: center;
-    font-size: 0.85rem;
-    color: #64748B;
-    letter-spacing: 0.12em;
+    font-size: 0.65rem;
+    color: #333;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
-  }}
-  .section-header {{
-    font-size: 0.7rem;
-    font-weight: 800;
-    color: {config.BRAND_COLOR};
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    margin: 1.5rem 0 0.8rem 0;
-    padding-bottom: 0.4rem;
-    border-bottom: 1px solid {config.BRAND_COLOR}33;
-  }}
+    margin-top: 0.4rem;
+    font-weight: 600;
+  }
 
-  /* ── Start-Screen ─────────────────────────────────────────────────────── */
-  .start-screen {{
-    background: linear-gradient(135deg, #1a0a00 0%, #2d1200 50%, #1a0a00 100%);
-    border: 1px solid {config.BRAND_COLOR}44;
+  /* ── Section Header ──────────────────────────────────────────────────── */
+  .section-header {
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: #333;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    margin: 2rem 0 1rem 0;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid #151515;
+  }
+
+  /* ── Start Screen ────────────────────────────────────────────────────── */
+  .start-screen {
+    background: #0E0E0E;
+    border: 1px solid #1A1A1A;
     border-radius: 16px;
-    padding: 3rem 2rem;
+    padding: 3.5rem 2.5rem;
     text-align: center;
-    margin: 2rem auto;
-    max-width: 600px;
-  }}
-  .start-title {{
-    font-size: 1.5rem;
+    margin: 3rem auto;
+    max-width: 560px;
+  }
+  .start-title {
+    font-size: 1.6rem;
     font-weight: 800;
-    color: {config.BRAND_COLOR};
-    margin-bottom: 0.5rem;
-  }}
-  .start-sub {{
-    color: #94A3B8;
-    font-size: 0.95rem;
-    margin-bottom: 2rem;
-    line-height: 1.6;
-  }}
+    color: #FFFFFF;
+    margin-bottom: 0.8rem;
+    letter-spacing: -0.02em;
+  }
+  .start-sub {
+    color: #555;
+    font-size: 0.9rem;
+    margin-bottom: 2.5rem;
+    line-height: 1.7;
+  }
 
+  /* ── Inputs ──────────────────────────────────────────────────────────── */
   div[data-testid="stNumberInput"] input,
-  div[data-testid="stTextInput"] input {{
-    background-color: #1A2035 !important;
-    border: 1px solid #2D3748 !important;
-    color: #E2E8F0 !important;
-    border-radius: 6px !important;
-    font-size: 1rem !important;
-  }}
-  div[data-testid="stNumberInput"] label,
-  div[data-testid="stTextInput"] label {{
-    color: #94A3B8 !important;
-    font-size: 0.85rem !important;
-    font-weight: 600 !important;
-  }}
-  .stButton > button {{
+  div[data-testid="stTextInput"] input,
+  div[data-testid="stDateInput"] input {
+    background-color: #0E0E0E !important;
+    border: 1px solid #1E1E1E !important;
+    color: #E8E8E8 !important;
     border-radius: 8px !important;
-    font-weight: 700 !important;
-    letter-spacing: 0.05em !important;
-    transition: all 0.2s !important;
-  }}
-  .stButton > button[kind="primary"] {{
-    background: {config.BRAND_COLOR} !important;
-    border: none !important;
-    color: white !important;
-    padding: 0.6rem 1.5rem !important;
-  }}
-  .stButton > button[kind="primary"]:hover {{
-    background: #c44008 !important;
-    box-shadow: 0 4px 20px {config.BRAND_COLOR}44 !important;
-    transform: translateY(-1px) !important;
-  }}
-  div[data-testid="stCheckbox"] label {{
-    color: #CBD5E1 !important;
     font-size: 0.95rem !important;
-  }}
-  .stTabs [data-baseweb="tab-list"] {{
-    background-color: {config.CARD_BG} !important;
+    font-family: 'Inter', sans-serif !important;
+  }
+  div[data-testid="stNumberInput"] input:focus,
+  div[data-testid="stTextInput"] input:focus {
+    border-color: #3A3A3A !important;
+    box-shadow: none !important;
+  }
+  div[data-testid="stNumberInput"] label,
+  div[data-testid="stTextInput"] label,
+  div[data-testid="stDateInput"] label {
+    color: #444 !important;
+    font-size: 0.72rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.12em !important;
+  }
+
+  /* ── Buttons ─────────────────────────────────────────────────────────── */
+  .stButton > button {
     border-radius: 8px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.08em !important;
+    font-size: 0.85rem !important;
+    transition: all 0.2s ease !important;
+    font-family: 'Inter', sans-serif !important;
+  }
+  .stButton > button[kind="primary"] {
+    background: #FFFFFF !important;
+    border: none !important;
+    color: #080808 !important;
+    padding: 0.65rem 1.5rem !important;
+  }
+  .stButton > button[kind="primary"]:hover {
+    background: #D8D8D8 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 8px 30px rgba(255,255,255,0.08) !important;
+  }
+  .stButton > button[kind="secondary"] {
+    background: transparent !important;
+    border: 1px solid #222 !important;
+    color: #888 !important;
+  }
+  .stButton > button[kind="secondary"]:hover {
+    border-color: #444 !important;
+    color: #CCC !important;
+  }
+
+  /* ── Checkboxen ──────────────────────────────────────────────────────── */
+  div[data-testid="stCheckbox"] label {
+    color: #888 !important;
+    font-size: 0.9rem !important;
+    font-weight: 400 !important;
+  }
+  div[data-testid="stCheckbox"] input:checked + div {
+    background-color: #FFFFFF !important;
+    border-color: #FFFFFF !important;
+  }
+
+  /* ── Tabs ────────────────────────────────────────────────────────────── */
+  .stTabs [data-baseweb="tab-list"] {
+    background-color: #0E0E0E !important;
+    border: 1px solid #1A1A1A !important;
+    border-radius: 10px !important;
     padding: 0.3rem !important;
     gap: 0.2rem !important;
-  }}
-  .stTabs [data-baseweb="tab"] {{
-    border-radius: 6px !important;
-    color: #64748B !important;
+  }
+  .stTabs [data-baseweb="tab"] {
+    border-radius: 7px !important;
+    color: #444 !important;
     font-weight: 600 !important;
-  }}
-  .stTabs [aria-selected="true"] {{
-    background-color: {config.BRAND_COLOR} !important;
-    color: white !important;
-  }}
+    font-size: 0.82rem !important;
+    letter-spacing: 0.05em !important;
+  }
+  .stTabs [aria-selected="true"] {
+    background-color: #1A1A1A !important;
+    color: #FFFFFF !important;
+  }
+
+  /* ── Selectbox / Expander ────────────────────────────────────────────── */
+  div[data-baseweb="select"] {
+    background-color: #0E0E0E !important;
+  }
+  div[data-testid="stExpander"] {
+    background: #0E0E0E !important;
+    border: 1px solid #1A1A1A !important;
+    border-radius: 10px !important;
+  }
+  div[data-testid="stExpander"] summary {
+    color: #444 !important;
+    font-size: 0.8rem !important;
+  }
+
+  /* ── Divider ─────────────────────────────────────────────────────────── */
+  hr {
+    border-color: #151515 !important;
+    margin: 1.5rem 0 !important;
+  }
+
+  /* ── Dataframe ───────────────────────────────────────────────────────── */
+  div[data-testid="stDataFrame"] {
+    background: #0E0E0E !important;
+    border: 1px solid #1A1A1A !important;
+    border-radius: 10px !important;
+  }
 </style>
 """, unsafe_allow_html=True)
 
@@ -278,8 +363,8 @@ if startdatum is None:
       <div class='start-sub'>
         Klicke auf den Button um die Challenge offiziell zu starten.<br>
         Das heutige Datum wird als Tag 1 gesetzt.<br><br>
-        <strong style='color:{config.BRAND_COLOR};'>Startgewicht: {config.STARTGEWICHT_KG} kg &nbsp;|&nbsp;
-        Ziel: {config.KCAL_ZIEL} kcal &nbsp;|&nbsp; {config.PROTEIN_ZIEL_G}g Protein</strong>
+        <strong style='color:#888;'>Startgewicht: {config.STARTGEWICHT_KG} kg &nbsp;·&nbsp;
+        Ziel: {config.KCAL_ZIEL} kcal &nbsp;·&nbsp; {config.PROTEIN_ZIEL_G}g Protein</strong>
       </div>
     </div>
     """, unsafe_allow_html=True)
@@ -355,28 +440,39 @@ if "gespeichert" not in st.session_state or "slots" not in st.session_state:
 
 def fortschrittsbalken(wert: float, ziel: float, farbe: str, einheit: str = "") -> str:
     pct = min((wert / ziel) * 100, 100) if ziel > 0 else 0
+    # Im neuen Design immer silberner Balken, Farbe nur für Status-Dot
+    balken_farbe = "linear-gradient(90deg, #3A3A3A, #888888)"
+    if pct >= 100:
+        balken_farbe = "linear-gradient(90deg, #555, #FFFFFF)"
     return f"""
     <div class='progress-bar-wrap'>
-      <div class='progress-bar-fill' style='width:{pct:.1f}%;background:{farbe};'></div>
+      <div class='progress-bar-fill' style='width:{pct:.1f}%;background:{balken_farbe};'></div>
     </div>
-    <div style='display:flex;justify-content:space-between;font-size:0.78rem;color:#64748B;'>
-      <span>{wert:.0f}{einheit}</span><span>Ziel: {ziel:.0f}{einheit}</span>
+    <div style='display:flex;justify-content:space-between;font-size:0.75rem;color:#333;margin-top:0.2rem;'>
+      <span style='color:#666;'>{wert:.0f}{einheit}</span>
+      <span style='color:#333;'>/ {ziel:.0f}{einheit}</span>
     </div>
     """
 
 
 def makro_karte(label: str, wert: float, ziel: float, einheit: str, farbe: str) -> str:
     pct = min((wert / ziel) * 100, 100) if ziel > 0 else 0
+    # Status-Indikator: kleiner Dot statt Farbe
+    dot = "#FFFFFF" if pct >= 100 else ("#666" if pct >= 80 else "#2A2A2A")
+    balken = "linear-gradient(90deg, #2A2A2A, #FFFFFF)" if pct >= 100 else "linear-gradient(90deg, #1E1E1E, #555)"
     return f"""
     <div class='metric-card'>
-      <div class='metric-value' style='color:{farbe};font-size:1.5rem;'>
-        {wert:.0f}<span style='font-size:0.8rem;color:#64748B;'>{einheit}</span>
+      <div style='display:flex;align-items:center;justify-content:center;gap:0.5rem;'>
+        <div style='width:6px;height:6px;border-radius:50%;background:{dot};flex-shrink:0;'></div>
+        <div class='metric-value' style='font-size:1.6rem;'>
+          {wert:.0f}<span style='font-size:0.75rem;color:#333;font-weight:400;margin-left:2px;'>{einheit}</span>
+        </div>
       </div>
       <div class='metric-label'>{label}</div>
-      <div class='progress-bar-wrap' style='margin-top:0.4rem;'>
-        <div class='progress-bar-fill' style='width:{pct:.1f}%;background:{farbe};'></div>
+      <div class='progress-bar-wrap'>
+        <div class='progress-bar-fill' style='width:{pct:.1f}%;background:{balken};'></div>
       </div>
-      <div class='metric-sub'>{pct:.0f}% von {ziel:.0f}{einheit}</div>
+      <div class='metric-sub'>{pct:.0f} %</div>
     </div>
     """
 
@@ -398,31 +494,33 @@ kcal_ziel  = db.get_kcal_ziel()
 
 st.markdown(f"""
 <div class='app-header'>
-  <div style='display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;'>
+  <div style='display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1.5rem;'>
     <div>
-      <div class='app-title'>⚡ Die Sueben Transformation</div>
-      <div class='app-subtitle'>90 Tage bis zur Bestform &nbsp;|&nbsp; FC Suebia Edition</div>
+      <div class='app-title'>Die Sueben Transformation</div>
+      <div class='app-subtitle'>90 Tage bis zur Bestform &nbsp;&nbsp;·&nbsp;&nbsp; FC Suebia Edition</div>
     </div>
-    <div style='display:flex;gap:1.5rem;align-items:center;'>
+    <div style='display:flex;gap:2.5rem;align-items:center;'>
       <div style='text-align:center;'>
-        <div style='font-size:2.5rem;font-weight:900;color:{config.BRAND_COLOR};line-height:1;'>{tag_nr}</div>
-        <div style='font-size:0.65rem;color:#64748B;text-transform:uppercase;letter-spacing:0.1em;'>von 90 Tagen</div>
+        <div style='font-size:2.2rem;font-weight:800;color:#FFFFFF;line-height:1;letter-spacing:-0.03em;'>{tag_nr}</div>
+        <div style='font-size:0.6rem;color:#2A2A2A;text-transform:uppercase;letter-spacing:0.2em;margin-top:0.3rem;font-weight:600;'>von 90</div>
       </div>
+      <div style='width:1px;height:2.5rem;background:#1A1A1A;'></div>
       <div style='text-align:center;'>
-        <div style='font-size:2.5rem;font-weight:900;color:{config.SUCCESS_COLOR};line-height:1;'>🔥 {streak}</div>
-        <div style='font-size:0.65rem;color:#64748B;text-transform:uppercase;letter-spacing:0.1em;'>Streak</div>
+        <div style='font-size:2.2rem;font-weight:800;color:#FFFFFF;line-height:1;letter-spacing:-0.03em;'>{streak}</div>
+        <div style='font-size:0.6rem;color:#2A2A2A;text-transform:uppercase;letter-spacing:0.2em;margin-top:0.3rem;font-weight:600;'>Streak</div>
       </div>
-      <div style='text-align:center;'>
-        <div style='font-size:1.3rem;font-weight:700;color:#94A3B8;line-height:1;'>{heute.strftime("%d.%m.%Y")}</div>
-        <div style='font-size:0.65rem;color:#64748B;text-transform:uppercase;letter-spacing:0.1em;'>{heute.strftime("%A")}</div>
+      <div style='width:1px;height:2.5rem;background:#1A1A1A;'></div>
+      <div style='text-align:right;'>
+        <div style='font-size:1rem;font-weight:600;color:#555;line-height:1;'>{heute.strftime("%d.%m.%Y")}</div>
+        <div style='font-size:0.6rem;color:#2A2A2A;text-transform:uppercase;letter-spacing:0.15em;margin-top:0.3rem;font-weight:600;'>{heute.strftime("%A")}</div>
       </div>
     </div>
   </div>
-  <div style='margin-top:1rem;'>
-    <div class='progress-bar-wrap' style='height:6px;'>
-      <div class='progress-bar-fill' style='width:{(tag_nr/90)*100:.1f}%;background:linear-gradient(90deg,{config.BRAND_COLOR},{config.WARNING_COLOR});'></div>
+  <div style='margin-top:1.5rem;'>
+    <div style='background:#111;border-radius:999px;height:2px;overflow:hidden;'>
+      <div style='width:{(tag_nr/90)*100:.1f}%;height:100%;background:linear-gradient(90deg,#2A2A2A,#FFFFFF);border-radius:999px;'></div>
     </div>
-    <div style='font-size:0.72rem;color:#475569;margin-top:0.3rem;text-align:right;'>{90-tag_nr} Tage verbleibend</div>
+    <div style='font-size:0.65rem;color:#2A2A2A;margin-top:0.5rem;text-align:right;letter-spacing:0.1em;'>{90-tag_nr} TAGE VERBLEIBEND</div>
   </div>
 </div>
 """, unsafe_allow_html=True)
@@ -706,8 +804,8 @@ with tab_progress:
         streak_col, days_col, avg_col, best_col = st.columns(4)
         with streak_col:
             st.markdown(
-                f"<div class='streak-display'>🔥 {streak}</div>"
-                f"<div class='streak-label'>Aktuelle Streak</div>",
+                f"<div class='streak-display'>{streak}</div>"
+                f"<div class='streak-label'>Streak</div>",
                 unsafe_allow_html=True,
             )
         with days_col:
